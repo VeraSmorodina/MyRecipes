@@ -10,7 +10,11 @@
         android:id="@+id/categoriesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CategoriesFragment"
         android:label="fragment_categories"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_categories" >
+        <action
+            android:id="@+id/action_categoriesFragment_to_recipesFragment"
+            app:destination="@id/recipesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/recipesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"

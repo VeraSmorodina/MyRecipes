@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/inboxFragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/nav_item_search" />
+    <item
+        android:id="@+id/sentItemsFragment"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/nav_item_favorite" />
+    <item
+        android:id="@+id/helpFragment"
+        android:icon="@drawable/ic_add_circle"
+        android:title="@string/nav_item_add" />
+</menu>
