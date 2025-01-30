@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<!--<FrameLayout-->
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".presentation.fragments.CategoriesFragment">
 
-<!--    <Button-->
-<!--        android:id="@+id/my_button"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Нажми меня!" />-->
+    <data>
+        <variable
+            name="viewModel"
+            type="com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel" />
+    </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tasks_list"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</FrameLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--    <Button-->
+        <!--        android:id="@+id/my_button"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:text="Нажми меня!" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tasks_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2" />
+    </LinearLayout>
+</layout>
+    <!--</FrameLayout>-->

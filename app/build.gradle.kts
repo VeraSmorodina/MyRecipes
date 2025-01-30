@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.devtools.ksp)
+    id ("kotlin-kapt")
 }
 
 android {
@@ -36,7 +37,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
+
 }
 
 dependencies {

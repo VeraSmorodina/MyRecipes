@@ -6,9 +6,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
+import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 
 class CategoryItemsAdapter : RecyclerView.Adapter<CategoryItemsAdapter.CategoryItemsViewHolder>() {
-    var data = listOf<String>("Супы","Салаты","Напитки","Закуски")
+    var data = listOf<CategoryEntity>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -35,8 +36,8 @@ class CategoryItemsAdapter : RecyclerView.Adapter<CategoryItemsAdapter.CategoryI
             }
         }
 
-        fun bind(item: String) {
-            rootView.findViewById<TextView>(R.id.category_title).text = item
+        fun bind(item: CategoryEntity) {
+            rootView.findViewById<TextView>(R.id.category_title).text = item.name
         }
     }
 }
