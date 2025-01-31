@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
@@ -24,12 +26,8 @@ class CategoriesFragment : Fragment() {
         _binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
-//        val myButton: Button = view.findViewById(R.id.my_button)
-//        myButton.setOnClickListener {
-//            view.findNavController()
-//                .navigate(R.id.action_categoriesFragment_to_recipesFragment)
-//        }
-        val adapter = CategoryItemsAdapter()
+        val adapter = CategoryItemsAdapter{view.findNavController()
+                .navigate(R.id.action_categoriesFragment_to_recipesFragment)}
         binding.tasksList.adapter = adapter
 
         val application = requireNotNull(this.activity).application
@@ -41,7 +39,7 @@ class CategoriesFragment : Fragment() {
 
         viewModel.categoriesLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.data = it
+                adapter.submitList(it)
             }
         })
         return view

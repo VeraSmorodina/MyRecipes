@@ -4,40 +4,48 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
+import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
+import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
 
-class CategoryItemsAdapter : RecyclerView.Adapter<CategoryItemsAdapter.CategoryItemsViewHolder>() {
-    var data = listOf<CategoryEntity>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+//class CategoryItemsAdapter : RecyclerView.Adapter<CategoryItemsAdapter.CategoryItemsViewHolder>() {
 
-    override fun getItemCount() = data.size
+
+class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
+    ListAdapter<CategoryEntity, CategoryItemsAdapter.CategoryItemsViewHolder>(CategoriesDiffItemCallback()) {
+
+//    var data = listOf<CategoryEntity>()
+//        set(value) {
+//            field = value
+//            notifyDataSetChanged()
+//        }
+//
+//    override fun getItemCount() = data.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             : CategoryItemsViewHolder = CategoryItemsViewHolder.inflateFrom(parent)
 
     override fun onBindViewHolder(holder: CategoryItemsViewHolder, position: Int) {
-        val item = data[position]
-        holder.bind(item)
+        val item = getItem(position)
+        holder.bind(item, clickListener)
     }
 
-    class CategoryItemsViewHolder(private val rootView: CardView)
-        : RecyclerView.ViewHolder(rootView) {
+    class CategoryItemsViewHolder(val binding: RecipeCategoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun inflateFrom(parent: ViewGroup): CategoryItemsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater
-                    .inflate(R.layout.recipe_category_item, parent, false) as CardView
-                return CategoryItemsViewHolder(view)
+                val binding = RecipeCategoryItemBinding.inflate(layoutInflater, parent, false)
+                return CategoryItemsViewHolder(binding)
             }
         }
 
-        fun bind(item: CategoryEntity) {
-            rootView.findViewById<TextView>(R.id.category_title).text = item.name
+        fun bind(item: CategoryEntity, clickListener: (itemId: Long) -> Unit) {
+            binding.categoryTitle.text = item.name
+            binding.root.setOnClickListener { clickListener(item.id) }
         }
     }
 }
