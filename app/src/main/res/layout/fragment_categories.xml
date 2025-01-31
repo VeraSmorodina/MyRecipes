@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<FrameLayout-->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".presentation.fragments.CategoriesFragment">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel" />
@@ -14,19 +14,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/gray"
         android:orientation="vertical">
-        <!--    <Button-->
-        <!--        android:id="@+id/my_button"-->
-        <!--        android:layout_width="wrap_content"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:text="Нажми меня!" />-->
+
+        <EditText
+            android:id="@+id/task_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:hint="Поиск по рецептам"
+            android:textColorHint="@color/gray_light"
+            android:inputType="text"
+            android:text="" />
+
+        <Button
+            android:id="@+id/my_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:backgroundTint="@color/gray_light"
+            android:text="Добавить категорию" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tasks_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:listitem="@layout/recipe_category_item"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2" />
     </LinearLayout>
 </layout>
-    <!--</FrameLayout>-->

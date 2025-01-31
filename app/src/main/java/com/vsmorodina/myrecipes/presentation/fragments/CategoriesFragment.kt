@@ -37,11 +37,11 @@ class CategoriesFragment : Fragment() {
             this, viewModelFactory).get(CategoriesViewModel::class.java)
         binding.viewModel = viewModel
 
-        viewModel.categoriesLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.categoriesLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 adapter.submitList(it)
             }
-        })
+        }
         return view
     }
 
