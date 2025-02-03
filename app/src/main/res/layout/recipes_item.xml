@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="220dp"
     android:layout_margin="8dp"
     app:cardCornerRadius="15dp"
     app:cardElevation="4dp">
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@drawable/s2004" />
+            android:src="@drawable/s1200" />
 
         <View
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/category_title"
+        android:id="@+id/recipe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
@@ -33,5 +33,5 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:text="Category" />
+        tools:text="Recipe" />
 </androidx.cardview.widget.CardView>

@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "recipes")
-class RecipeEntity(
+data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
 
@@ -16,5 +16,8 @@ class RecipeEntity(
     val ingredients: String,
 
     @ColumnInfo(name = "cookingAlgorithm")
-    val cookingAlgorithm: String
+    val cookingAlgorithm: String,
+
+    @ColumnInfo(name = "photo_url")
+    val photoUrl: String
 )
