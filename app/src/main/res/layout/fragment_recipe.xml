@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel" />
+            type="com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel" />
     </data>
 
     <LinearLayout
@@ -30,7 +30,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="@{viewModel.recipe.name}"
             tools:text="Text" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="@{viewModel.recipe.ingredients}"
             tools:text="Text" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="@{viewModel.recipe.cookingAlgorithm}"
             tools:text="Text" />
 
     </LinearLayout>

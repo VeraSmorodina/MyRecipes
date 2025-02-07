@@ -5,4 +5,6 @@ import com.vsmorodina.myrecipes.data.dao.RecipeDao
 
 class RecipeViewModel (private val recipeId: Long, private val dao: RecipeDao) : ViewModel() {
     val recipe = dao.get(recipeId)
+
+
 }
