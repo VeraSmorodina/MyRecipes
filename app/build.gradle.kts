@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.devtools.ksp)
     id ("kotlin-kapt")
+    alias(libs.plugins.safe.args)
 }
 
 android {
@@ -15,7 +16,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -43,8 +43,6 @@ android {
 }
 
 dependencies {
-//    val lifecycle_version = "2.3.1"
-//    val room_version = "2.3.0"
     implementation (libs.androidx.recyclerview)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.androidx.lifecycle.livedata.ktx)
@@ -53,6 +51,7 @@ dependencies {
     ksp (libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+//    implementation(libs.navigation.safe.args.gradle.plugin)
 
 
 
