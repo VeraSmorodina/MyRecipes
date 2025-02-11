@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/inboxFragment"
+        android:id="@+id/categoriesFragment"
         android:icon="@drawable/ic_search"
         android:title="@string/nav_item_search" />
     <item
-        android:id="@+id/sentItemsFragment"
+        android:id="@+id/favoritesFragment"
         android:icon="@drawable/ic_favorite"
         android:title="@string/nav_item_favorite" />
     <item
-        android:id="@+id/helpFragment"
+        android:id="@+id/createRecipeFragment"
         android:icon="@drawable/ic_add_circle"
         android:title="@string/nav_item_add" />
 </menu>

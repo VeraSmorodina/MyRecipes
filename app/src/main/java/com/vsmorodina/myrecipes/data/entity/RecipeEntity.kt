@@ -9,6 +9,9 @@ data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
 
+//    @ColumnInfo(name = "category_id")
+//    val categoryId: Long = 0L,
+
     @ColumnInfo(name = "name")
     val name: String,
 
@@ -19,5 +22,9 @@ data class RecipeEntity(
     val cookingAlgorithm: String,
 
     @ColumnInfo(name = "photo_url")
-    val photoUrl: String
+    val photoUrl: String,
+
+
+//    @ColumnInfo(name = "is_favorites")
+//    val isFavorites: Boolean
 )

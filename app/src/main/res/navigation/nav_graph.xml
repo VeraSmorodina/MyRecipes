@@ -33,4 +33,14 @@
             android:name="idArg"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/createRecipeFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.CreateRecipeFragment"
+        android:label="fragment_create_recipe"
+        tools:layout="@layout/fragment_create_recipe" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_recipes" />
 </navigation>
