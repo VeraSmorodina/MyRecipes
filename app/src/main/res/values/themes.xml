@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MyRecipes" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
     </style>
 
     <style name="Theme.MyRecipes" parent="Base.Theme.MyRecipes" />
+    <style name="CustomBottomNavTheme" parent="">
+        <item name="colorPrimaryContainer">@color/gray_light</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+    </style>
+
 </resources>
