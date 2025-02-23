@@ -13,8 +13,9 @@ data class CategoryEntity(//data переопределяет методы ик�
     val name: String,
 
     @ColumnInfo(name = "photo_url")
-    val photoUrl: String
+    val photoUrl: String,
 
-//    @ColumnInfo(name = "is_default")
-//    val isDefault: Boolean
+    @ColumnInfo(name = "is_default")
+    val isDefault: Boolean = false
 )
+// Цезарь   помидоры огурцы   шаг 1   шаг 2

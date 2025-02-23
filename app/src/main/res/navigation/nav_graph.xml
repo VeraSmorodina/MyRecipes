@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_recipesFragment"
             app:destination="@id/recipesFragment" />
+        <action
+            android:id="@+id/action_categoriesFragment_to_createCategoryFragment2"
+            app:destination="@id/createCategoryFragment2" />
     </fragment>
     <fragment
         android:id="@+id/recipesFragment"
@@ -43,4 +46,9 @@
         android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_recipes" />
+    <fragment
+        android:id="@+id/createCategoryFragment2"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.CreateCategoryFragment"
+        android:label="fragment_create_category"
+        tools:layout="@layout/fragment_create_category" />
 </navigation>

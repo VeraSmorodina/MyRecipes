@@ -1,10 +1,7 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
 import android.R
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateRecipeBinding
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
@@ -37,18 +35,29 @@ class CreateRecipeFragment : Fragment() {
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
         val application = requireNotNull(this.activity).application
-        val dao = AppDatabase.getInstance(application).categoryDao
-        val viewModelFactory = CreateRecipeViewModelFactory(dao)
+        val categoryDao = AppDatabase.getInstance(application).categoryDao
+        val recipeDao = AppDatabase.getInstance(application).recipeDao
+        val viewModelFactory = CreateRecipeViewModelFactory(categoryDao, recipeDao)
         viewModel = ViewModelProvider(
             this, viewModelFactory
         ).get(CreateRecipeViewModel::class.java)
         binding.viewModel = viewModel
+        binding.saveRecipeBtn.setOnClickListener {
+            val selectedCategoryIndex = binding.categorySpinner.selectedItemPosition
+            val name = binding.recipeNameEditText.text.toString()
+            val ing = binding.ingrNameEditText.text.toString()
+            val alg = binding.algNameEditText.text.toString()
+            viewModel.createRecipe(
+                selectedCategoryIndex = selectedCategoryIndex,
+                name = name,
+                ingredients = ing,
+                cookingAlgorithm = alg
+            )
+        }
 
-
-
-
-
-
+        viewModel.errorLiveData.observe(viewLifecycleOwner) {
+            Snackbar.make(view, it, Snackbar.LENGTH_LONG).show()
+        }
 
         return view
     }
@@ -68,19 +77,15 @@ class CreateRecipeFragment : Fragment() {
 //        }
 //    }
 
-// адаптер для спинера
+    // адаптер для спинера
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = ArrayAdapter(
             requireContext(),
-//            R.layout.simple_spinner_item,
             R.layout.simple_spinner_dropdown_item,
-            viewModel.categories.value?.toMutableList()?.map {
-                it.name
-            } ?: mutableListOf()
+            mutableListOf<String>()
         )
-//        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
-        binding.yourSpinnerId.adapter = adapter
+        binding.categorySpinner.adapter = adapter
         viewModel.categories.observe(viewLifecycleOwner) { newData ->
             adapter.clear()
             adapter.addAll(newData.map {
@@ -88,5 +93,10 @@ class CreateRecipeFragment : Fragment() {
             })
             adapter.notifyDataSetChanged()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
