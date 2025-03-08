@@ -11,13 +11,18 @@ import kotlinx.coroutines.launch
 class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel() {
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
+
     private var _imagePathLiveData = MutableLiveData<String>()
     val imagePathLiveData: LiveData<String> = _imagePathLiveData
+
+    private var _successSavingCategoryLiveData = MutableLiveData<String?>()
+    val successSavingCategoryLiveData: LiveData<String?> = _successSavingCategoryLiveData
+
 
     fun createCategory(name: String) {
         if (name.isBlank()) {
             _errorLiveData.value =
-                "Не удалось сохранить категорию, название рецепта не может быть пустым"
+                "Не удалось сохранить категорию, название не может быть пустым"
             return
         }
 
@@ -25,9 +30,11 @@ class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel(
             categoryDao.insert(
                 CategoryEntity(
                     name = name,
-                    photoUrl = "",
+                    photoUrl = _imagePathLiveData.value ?: "",
                 )
             )
+            _successSavingCategoryLiveData.value = "Категория сохранена успешно"
+            _successSavingCategoryLiveData.value = null
         }
     }
 

@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateCategoryBinding
@@ -117,6 +118,12 @@ class CreateCategoryFragment : Fragment() {
         }
         observeLiveData(viewModel.imagePathLiveData) {
             binding.imageView.setImageURI(Uri.parse(it))
+        }
+        observeLiveData(viewModel.successSavingCategoryLiveData) {
+            it?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG)
+                findNavController().navigateUp()
+            }
         }
     }
 
