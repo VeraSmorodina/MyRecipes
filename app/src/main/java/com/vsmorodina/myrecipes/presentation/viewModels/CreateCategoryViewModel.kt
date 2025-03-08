@@ -8,9 +8,11 @@ import com.vsmorodina.myrecipes.data.dao.CategoryDao
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import kotlinx.coroutines.launch
 
-class CreateCategoryViewModel(private val categoryDao: CategoryDao): ViewModel() {
+class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel() {
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
+    private var _imagePathLiveData = MutableLiveData<String>()
+    val imagePathLiveData: LiveData<String> = _imagePathLiveData
 
     fun createCategory(name: String) {
         if (name.isBlank()) {
@@ -29,6 +31,8 @@ class CreateCategoryViewModel(private val categoryDao: CategoryDao): ViewModel()
         }
     }
 
-
+    fun saveImagePath(imagePath: String) {
+        _imagePathLiveData.value = imagePath
+    }
 
 }
