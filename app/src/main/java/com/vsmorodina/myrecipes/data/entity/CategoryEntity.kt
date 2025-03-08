@@ -12,8 +12,8 @@ data class CategoryEntity(//data переопределяет методы ик�
     @ColumnInfo(name = "name")
     val name: String,
 
-    @ColumnInfo(name = "photo_url")
-    val photoUrl: String,
+    @ColumnInfo(name = "photo_uri")
+    val photoUri: String,
 
     @ColumnInfo(name = "is_default")
     val isDefault: Boolean = false

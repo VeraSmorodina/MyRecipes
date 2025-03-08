@@ -30,7 +30,7 @@ class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel(
             categoryDao.insert(
                 CategoryEntity(
                     name = name,
-                    photoUrl = _imagePathLiveData.value ?: "",
+                    photoUri = _imagePathLiveData.value ?: "",
                 )
             )
             _successSavingCategoryLiveData.value = "Категория сохранена успешно"
