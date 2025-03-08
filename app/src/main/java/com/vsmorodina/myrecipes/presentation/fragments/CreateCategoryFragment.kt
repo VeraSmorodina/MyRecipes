@@ -3,6 +3,7 @@ package com.vsmorodina.myrecipes.presentation.fragments
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -28,6 +29,8 @@ class CreateCategoryFragment : Fragment() {
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
 
+    private val pickImageCode = 100
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +53,18 @@ class CreateCategoryFragment : Fragment() {
         }
 
         binding.imageView.setOnClickListener {
-            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+            when (Build.VERSION.SDK_INT) {
+                in 1..31 -> {
+                    val puckImageFromGallery =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                    startActivityForResult(puckImageFromGallery, pickImageCode)
+                }
+
+                else -> {
+                    permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                }
+            }
+
         }
 
         viewModel.errorLiveData.observe(viewLifecycleOwner) {
@@ -98,6 +112,13 @@ class CreateCategoryFragment : Fragment() {
                     }
                 }
             }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == pickImageCode)
+            binding.imageView.setImageURI(data?.data)
     }
 
     override fun onDestroyView() {
