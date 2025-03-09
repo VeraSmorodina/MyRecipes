@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
+import java.io.File
 
 class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
     ListAdapter<CategoryEntity, CategoryItemsAdapter.CategoryItemsViewHolder>(
@@ -34,7 +35,7 @@ class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
         fun bind(item: CategoryEntity, clickListener: (itemId: Long) -> Unit) {
             with(binding) {
                 categoryTitle.text = item.name
-                imageView.setImageURI(Uri.parse(item.photoUri))
+                imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
             }
 

@@ -22,6 +22,7 @@ import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateCategoryBinding
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModelFactory
+import java.io.File
 
 fun <T> Fragment.observeLiveData(liveData: LiveData<T>, block: (T) -> Unit) {
     liveData.observe(viewLifecycleOwner, block)
@@ -71,7 +72,7 @@ class CreateCategoryFragment : Fragment() {
     private fun initImageView() {
         binding.imageView.setOnClickListener {
             when (Build.VERSION.SDK_INT) {
-                in 1..31 -> {
+                in 1..32 -> {
                     val puckImageFromGallery =
                         Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
                     startActivityForResult(puckImageFromGallery, pickImageCode)
@@ -121,7 +122,7 @@ class CreateCategoryFragment : Fragment() {
         }
         observeLiveData(viewModel.successSavingCategoryLiveData) {
             it?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG)
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                 findNavController().navigateUp()
             }
         }
@@ -135,9 +136,22 @@ class CreateCategoryFragment : Fragment() {
     }
 
     private fun setImageFromURI(selectedImageURI: Uri) {
-        viewModel.saveImagePath(selectedImageURI.toString())
+        saveImageToAppDirectory(selectedImageURI)?.let { viewModel.saveImagePath(it) }
         binding.imageView.setImageURI(selectedImageURI)
     }
+
+    private fun saveImageToAppDirectory(uri: Uri): String? {
+        val contentResolver = requireContext().contentResolver
+        val inputStream = contentResolver.openInputStream(uri) ?: return null
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+        val file = File(requireContext().filesDir, fileName)
+
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        return file.absolutePath // Возвращает путь к сохраненному файлу
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
