@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CategoriesFragment"
-        android:label="fragment_categories"
+        android:label="Мои рецепты"
         tools:layout="@layout/fragment_categories" >
         <action
             android:id="@+id/action_categoriesFragment_to_recipesFragment"
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/recipesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"
-        android:label="fragment_recipes"
+        android:label="Рецепты"
         tools:layout="@layout/fragment_recipes" >
         <action
             android:id="@+id/action_recipesFragment_to_recipeFragment"
@@ -30,7 +30,7 @@
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipeFragment"
-        android:label="fragment_recipe"
+        android:label="Рецепт"
         tools:layout="@layout/fragment_recipe" >
         <argument
             android:name="idArg"
@@ -39,16 +39,16 @@
     <fragment
         android:id="@+id/createRecipeFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CreateRecipeFragment"
-        android:label="fragment_create_recipe"
+        android:label="Создание рецепта"
         tools:layout="@layout/fragment_create_recipe" />
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"
-        android:label="fragment_favorites"
+        android:label="Избранное"
         tools:layout="@layout/fragment_recipes" />
     <fragment
         android:id="@+id/createCategoryFragment2"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CreateCategoryFragment"
-        android:label="fragment_create_category"
+        android:label="Создание категории"
         tools:layout="@layout/fragment_create_category" />
 </navigation>
