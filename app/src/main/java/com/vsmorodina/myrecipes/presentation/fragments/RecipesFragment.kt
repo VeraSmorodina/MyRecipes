@@ -20,15 +20,12 @@ class RecipesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRecipesBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
-//        val adapter = RecipeItemsAdapter{view.findNavController()
-//            .navigate(R.id.action_recipesFragment_to_recipeFragment)}
 
         val categoryId = RecipesFragmentArgs.fromBundle(requireArguments()).categoryId
-
         val application = requireNotNull(this.activity).application
         val dao = AppDatabase.getInstance(application).recipeDao
         val viewModelFactory = RecipesViewModelFactory(categoryId, dao)
@@ -37,22 +34,15 @@ class RecipesFragment : Fragment() {
         ).get(RecipesViewModel::class.java)
         binding.viewModel = viewModel
 
-        val adapter = RecipeItemsAdapter { recipeId -> viewModel.onRecipeClicked(recipeId) }
+        val adapter = RecipeItemsAdapter { recipeId ->
+            val action = RecipesFragmentDirections
+                .actionRecipesFragmentToRecipeFragment(recipeId)
+            findNavController().navigate(action)
+        }
         binding.recipeList.adapter = adapter
 
         viewModel.recipesLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                adapter.submitList(it)
-            }
-        }
-
-        viewModel.navigateToRecipe.observe(viewLifecycleOwner) { recipeId ->
-            recipeId?.let {
-                val action = RecipesFragmentDirections
-                    .actionRecipesFragmentToRecipeFragment(recipeId)
-                this.findNavController().navigate(action)
-                viewModel.onRecipeNavigated()
-            }
+            it?.let(adapter::submitList)
         }
         return view
     }
