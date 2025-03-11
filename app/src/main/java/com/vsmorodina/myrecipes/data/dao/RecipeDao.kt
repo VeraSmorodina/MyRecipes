@@ -22,6 +22,6 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE id = :id")
     fun get(id: Long): LiveData<RecipeEntity>
 
-    @Query("SELECT * FROM recipes")
-    fun getAll(): LiveData<List<RecipeEntity>>
+    @Query("SELECT * FROM recipes WHERE category_id = :categoryId")
+    fun getAll(categoryId: Long): LiveData<List<RecipeEntity>>
 }

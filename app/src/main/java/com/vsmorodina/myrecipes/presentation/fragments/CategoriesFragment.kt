@@ -13,6 +13,7 @@ import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
+import com.vsmorodina.myrecipes.presentation.adapters.RecipeItemsAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
 
@@ -23,12 +24,14 @@ class CategoriesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = CategoryItemsAdapter{view.findNavController()
-                .navigate(R.id.action_categoriesFragment_to_recipesFragment)}
+        val adapter = CategoryItemsAdapter { categoryId ->
+            val action = CategoriesFragmentDirections.actionCategoriesFragmentToRecipesFragment(categoryId)
+            findNavController().navigate(action)
+        }
         binding.tasksList.adapter = adapter
 
         val application = requireNotNull(this.activity).application
@@ -47,6 +50,7 @@ class CategoriesFragment : Fragment() {
         binding.myButton.setOnClickListener {
             findNavController().navigate(R.id.action_categoriesFragment_to_createCategoryFragment2)
         }
+
         return view
     }
 

@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_recipesFragment_to_recipeFragment"
             app:destination="@id/recipeFragment" />
+        <argument
+            android:name="categoryId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"

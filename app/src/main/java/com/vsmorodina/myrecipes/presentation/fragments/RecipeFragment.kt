@@ -21,15 +21,20 @@ class RecipeFragment : Fragment() {
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val taskId = RecipeFragmentArgs.fromBundle(requireArguments()).idArg
+        val recipeId = RecipeFragmentArgs.fromBundle(requireArguments()).idArg
 
         val application = requireNotNull(this.activity).application
         val dao = AppDatabase.getInstance(application).recipeDao
-        val viewModelFactory = RecipeViewModelFactory(taskId, dao)
+        val viewModelFactory = RecipeViewModelFactory(recipeId, dao)
         val viewModel = ViewModelProvider(
             this, viewModelFactory
         ).get(RecipeViewModel::class.java)
         binding.viewModel = viewModel
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
