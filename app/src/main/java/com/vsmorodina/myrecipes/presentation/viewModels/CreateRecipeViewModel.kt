@@ -18,16 +18,29 @@ class CreateRecipeViewModel(
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
 
+
+    private var _imagePathLiveData = MutableLiveData<String>()
+    val imagePathLiveData: LiveData<String> = _imagePathLiveData
+
+    private var _successSavingCategoryLiveData = MutableLiveData<String?>()
+    val successSavingCategoryLiveData: LiveData<String?> = _successSavingCategoryLiveData
+
     fun createRecipe(
         selectedCategoryIndex: Int,
         name: String,
         ingredients: String,
-        cookingAlgorithm: String
+        cookingAlgorithm: String,
     ) {
         val categoriesList = categories.value ?: return
 
         if (validateParameters(selectedCategoryIndex, categoriesList)) {
             _errorLiveData.value = "Не удалось сохранить рецепт"
+            return
+        }
+
+        if (name.isBlank()) {
+            _errorLiveData.value =
+                "Не удалось сохранить категорию, название не может быть пустым"
             return
         }
         viewModelScope.launch {
@@ -37,13 +50,18 @@ class CreateRecipeViewModel(
                     name = name,
                     ingredients = ingredients,
                     cookingAlgorithm = cookingAlgorithm,
-                    photoUrl = "",
+                    photoUrl = _imagePathLiveData.value ?: "",
                 )
             )
         }
+        _successSavingCategoryLiveData.value = "Cохранено успешно"
+        _successSavingCategoryLiveData.value = null
     }
 
     private fun validateParameters(selectedCategoryIndex: Int, categoriesList: List<CategoryEntity>) =
         selectedCategoryIndex < 0 || categoriesList.isEmpty()
 
+    fun saveImagePath(imagePath: String) {
+        _imagePathLiveData.value = imagePath
+    }
 }

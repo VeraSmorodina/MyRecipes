@@ -21,15 +21,16 @@
 
             <ImageView
                 android:id="@+id/image_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="100dp"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_margin="20dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_a_photo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/gray_very_light" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="100dp"
+                />
 
             <TextView
                 android:id="@+id/category_label"

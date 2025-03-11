@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="270dp"
             android:scaleType="fitXY"
-            android:src="@drawable/s2003" />
+            android:src="@{viewModel.recipe.photoUrl}" />
 
         <TextView
             android:id="@+id/recipeName_title"

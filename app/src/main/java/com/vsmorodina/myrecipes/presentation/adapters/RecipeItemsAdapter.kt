@@ -1,11 +1,13 @@
 package com.vsmorodina.myrecipes.presentation.adapters
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.databinding.RecipesItemBinding
+import java.io.File
 
 class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
     ListAdapter<RecipeEntity, RecipeItemsAdapter.RecipeItemsViewHolder>(RecipeDiffItemCallback()) {
@@ -29,8 +31,11 @@ class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
         }
 
         fun bind(item: RecipeEntity, clickListener: (itemId: Long) -> Unit) {
-            binding.recipeTitle.text = item.name
-            binding.root.setOnClickListener { clickListener(item.id) }
+            with(binding) {
+                recipeTitle.text = item.name
+                imageView.setImageURI(Uri.fromFile(File(item.photoUrl)))
+                root.setOnClickListener { clickListener(item.id) }
+            }
         }
     }
 }
