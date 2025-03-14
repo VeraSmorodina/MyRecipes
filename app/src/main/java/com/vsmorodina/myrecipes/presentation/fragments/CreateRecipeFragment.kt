@@ -149,10 +149,10 @@ class CreateRecipeFragment : Fragment() {
                 findNavController().navigateUp()
             }
         }
+        observeLiveData(viewModel.imagePathLiveData) {
+            binding.imageView.setImageURI(Uri.parse(it))
+        }
     }
-
-
-
 
 
     @Deprecated("Deprecated in Java")

@@ -50,7 +50,7 @@ class CreateRecipeViewModel(
                     name = name,
                     ingredients = ingredients,
                     cookingAlgorithm = cookingAlgorithm,
-                    photoUrl = _imagePathLiveData.value ?: "",
+                    photoUri = _imagePathLiveData.value ?: "",
                 )
             )
         }

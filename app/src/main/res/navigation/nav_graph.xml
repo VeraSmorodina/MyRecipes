@@ -46,9 +46,13 @@
         tools:layout="@layout/fragment_create_recipe" />
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.FavouritesRecipesFragment"
         android:label="Избранное"
-        tools:layout="@layout/fragment_recipes" />
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createCategoryFragment2"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CreateCategoryFragment"

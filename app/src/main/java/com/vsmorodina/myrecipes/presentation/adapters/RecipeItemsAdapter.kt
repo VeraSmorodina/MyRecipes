@@ -33,7 +33,7 @@ class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
         fun bind(item: RecipeEntity, clickListener: (itemId: Long) -> Unit) {
             with(binding) {
                 recipeTitle.text = item.name
-                imageView.setImageURI(Uri.fromFile(File(item.photoUrl)))
+                imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
             }
         }

@@ -22,7 +22,7 @@ data class RecipeEntity(
     val cookingAlgorithm: String,
 
     @ColumnInfo(name = "photo_url")
-    val photoUrl: String,
+    val photoUri: String,
 
     @ColumnInfo(name = "is_favorites")
     val isFavorites: Boolean = false
