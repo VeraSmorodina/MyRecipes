@@ -18,21 +18,16 @@ class FavouritesRecipesFragment : Fragment() {
     private var _binding: FragmentFavouritesRecipesBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentFavouritesRecipesBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FavouritesRecipeItemAdapter() { recipeId ->
+        val adapter = FavouritesRecipeItemAdapter { recipeId ->
             val action = FavouritesRecipesFragmentDirections.actionFavoritesFragmentToRecipeFragment(recipeId)
             findNavController().navigate(action)
         }

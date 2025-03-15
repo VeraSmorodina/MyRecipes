@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="270dp"
             android:scaleType="fitXY"
-            android:src="@{viewModel.recipe.photoUri}" />
+            android:src="@{viewModel.recipeLiveData.photoUri}" />
 
         <TextView
             android:id="@+id/recipeName_title"
@@ -30,7 +30,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="@{viewModel.recipe.name}"
+            android:text="@{viewModel.recipeLiveData.name}"
             tools:text="Text" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="@{viewModel.recipe.ingredients}"
+            android:text="@{viewModel.recipeLiveData.ingredients}"
             tools:text="Text" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:padding="8dp"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="@{viewModel.recipe.cookingAlgorithm}"
+            android:text="@{viewModel.recipeLiveData.cookingAlgorithm}"
             tools:text="Text" />
 
     </LinearLayout>
