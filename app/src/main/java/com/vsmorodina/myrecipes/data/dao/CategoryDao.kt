@@ -20,8 +20,14 @@ interface CategoryDao {
     suspend fun delete(categoryEntity: CategoryEntity)
 
     @Query("SELECT * FROM categories WHERE id = :id")
-    fun get(id: Long): LiveData<CategoryEntity>
+    fun getCategoryLiveData(id: Long): LiveData<CategoryEntity>
+
+    @Query("SELECT * FROM categories WHERE id = :id")
+    suspend fun getCategory(id: Long): CategoryEntity
 
     @Query("SELECT * FROM categories")
-    fun getAll(): LiveData<List<CategoryEntity>>
+    fun getAllLiveData(): LiveData<List<CategoryEntity>>
+
+    @Query("SELECT * FROM categories")
+    suspend fun getAll(): List<CategoryEntity>
 }

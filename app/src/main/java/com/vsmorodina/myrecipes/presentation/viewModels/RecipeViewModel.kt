@@ -8,7 +8,7 @@ import com.vsmorodina.myrecipes.data.dao.RecipeDao
 import kotlinx.coroutines.launch
 
 class RecipeViewModel(private val recipeId: Long, private val dao: RecipeDao) : ViewModel() {
-    val recipeLiveData = dao.get(recipeId)
+    val recipeLiveData = dao.getRecipeLiveData(recipeId)
     private val _deleteRecipeCompletedLiveData = MutableLiveData<Unit>()
     val deleteRecipeCompletedLiveData: LiveData<Unit> = _deleteRecipeCompletedLiveData
 

@@ -10,22 +10,28 @@ import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import kotlinx.coroutines.launch
 
-class CreateRecipeViewModel(
-    categoryDao: CategoryDao,
-    private val recipeDao: RecipeDao
+class ChangeRecipeViewModel(
+    val recipeId: Long,
+    val recipeDao: RecipeDao,
+    val categoryDao: CategoryDao
 ) : ViewModel() {
+    val recipeLiveData = recipeDao.getRecipeLiveData(recipeId)
     val categories = categoryDao.getAllLiveData()
+
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
 
-
-    private var _imagePathLiveData = MutableLiveData<String>()
+    private val _imagePathLiveData = MutableLiveData<String>()
     val imagePathLiveData: LiveData<String> = _imagePathLiveData
 
-    private var _successSavingCategoryLiveData = MutableLiveData<String?>()
-    val successSavingCategoryLiveData: LiveData<String?> = _successSavingCategoryLiveData
+    private val _successSavingRecipeLiveData = MutableLiveData<String?>()
+    val successSavingRecipeLiveData: LiveData<String?> = _successSavingRecipeLiveData
 
-    fun createRecipe(
+    private val _selectedCategoryIndexLiveData = MutableLiveData<Int>()
+    val selectedCategoryIndexLiveData: LiveData<Int> = _selectedCategoryIndexLiveData
+
+
+    fun changeRecipe(
         selectedCategoryIndex: Int,
         name: String,
         ingredients: String,
@@ -54,14 +60,30 @@ class CreateRecipeViewModel(
                 )
             )
         }
-        _successSavingCategoryLiveData.value = "Cохранено успешно"
-        _successSavingCategoryLiveData.value = null
+        _successSavingRecipeLiveData.value = "Cохранено успешно"
+        _successSavingRecipeLiveData.value = null
     }
 
-    private fun validateParameters(selectedCategoryIndex: Int, categoriesList: List<CategoryEntity>) =
+    private fun validateParameters(
+        selectedCategoryIndex: Int,
+        categoriesList: List<CategoryEntity>
+    ) =
         selectedCategoryIndex < 0 || categoriesList.isEmpty()
 
     fun saveImagePath(imagePath: String) {
         _imagePathLiveData.value = imagePath
+    }
+
+    fun setCategoryIndex(index: Int) {
+        _selectedCategoryIndexLiveData.value = index
+    }
+
+    fun calculateCategoryIndex() {
+        viewModelScope.launch {
+            val categoryId = recipeDao.getRecipe(recipeId).categoryId
+            val category = categoryDao.getCategory(categoryId)
+            val categoriesList = categoryDao.getAll()
+            _selectedCategoryIndexLiveData.value = categoriesList.indexOf(category)
+        }
     }
 }

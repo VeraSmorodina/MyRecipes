@@ -65,9 +65,13 @@ class RecipeFragment : Fragment() {
                 viewModel.deleteRecipe()
                 return true
             }
-
             R.id.action_change -> {
-                return true
+                viewModel.recipeLiveData.value?.id?.let { recipeId ->
+                    val action = RecipeFragmentDirections.actionRecipeFragmentToChangeRecipeFragment(recipeId)
+                    findNavController().navigate(action)
+                    true
+                } ?: true
+
             }
         }
         return super.onOptionsItemSelected(item)

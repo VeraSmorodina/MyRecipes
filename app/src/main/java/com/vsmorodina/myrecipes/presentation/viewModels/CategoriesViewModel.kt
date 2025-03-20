@@ -4,5 +4,5 @@ import androidx.lifecycle.ViewModel
 import com.vsmorodina.myrecipes.data.dao.CategoryDao
 
 class CategoriesViewModel(val dao: CategoryDao) : ViewModel() {
-    val categoriesLiveData = dao.getAll()
+    val categoriesLiveData = dao.getAllLiveData()
 }
