@@ -53,7 +53,7 @@ class ChangeRecipeFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentChangeRecipeBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -156,6 +156,9 @@ class ChangeRecipeFragment : Fragment() {
         }
         observeLiveData(viewModel.selectedCategoryIndexLiveData) {
             binding.categorySpinner.setSelection(it)
+        }
+        observeLiveData(viewModel.recipeLiveData){
+            binding.imageView.setImageURI(Uri.parse(it.photoUri))
         }
     }
 

@@ -52,11 +52,16 @@ class ChangeRecipeViewModel(
         viewModelScope.launch {
             recipeDao.insert(
                 RecipeEntity(
+                    id = recipeId,
                     categoryId = categoriesList[selectedCategoryIndex].id,
                     name = name,
                     ingredients = ingredients,
                     cookingAlgorithm = cookingAlgorithm,
-                    photoUri = _imagePathLiveData.value ?: "",
+                    photoUri = when {
+                        _imagePathLiveData.value != null ->  _imagePathLiveData.value ?: ""
+                        _imagePathLiveData.value == null -> recipeLiveData.value?.photoUri ?: ""
+                        else -> ""
+                    },
                 )
             )
         }
