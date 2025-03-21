@@ -5,4 +5,6 @@
     <string name="nav_item_search">Поиск</string>
     <string name="nav_item_favorite">Избранное</string>
     <string name="nav_item_add">Добавить</string>
+    <string name="edit_button_title">Редактировать</string>
+    <string name="delete_button_title">Удалить</string>
 </resources>
