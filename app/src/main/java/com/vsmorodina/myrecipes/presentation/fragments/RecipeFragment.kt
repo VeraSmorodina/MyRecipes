@@ -52,6 +52,16 @@ class RecipeFragment : Fragment() {
         observeLiveData(viewModel.deleteRecipeCompletedLiveData) {
             findNavController().navigateUp()
         }
+        observeLiveData(viewModel.isFavoriteLiveData) {
+            binding.favoriteButton.setImageResource(
+                if (it) R.drawable.ic_favorite_red
+                else R.drawable.ic_favorite
+            )
+        }
+        viewModel.getFavoriteStatus()
+        binding.favoriteButton.setOnClickListener {
+            viewModel.updateFavorite()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -65,9 +75,11 @@ class RecipeFragment : Fragment() {
                 viewModel.deleteRecipe()
                 return true
             }
+
             R.id.action_change -> {
                 viewModel.recipeLiveData.value?.id?.let { recipeId ->
-                    val action = RecipeFragmentDirections.actionRecipeFragmentToChangeRecipeFragment(recipeId)
+                    val action =
+                        RecipeFragmentDirections.actionRecipeFragmentToChangeRecipeFragment(recipeId)
                     findNavController().navigate(action)
                     true
                 } ?: true

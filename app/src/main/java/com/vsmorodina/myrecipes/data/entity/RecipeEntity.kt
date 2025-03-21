@@ -33,6 +33,6 @@ data class RecipeEntity(
     @ColumnInfo(name = "photo_url")
     val photoUri: String,
 
-    @ColumnInfo(name = "is_favorites")
-    val isFavorites: Boolean = false
+    @ColumnInfo(name = "is_favorite")
+    val isFavorite: Boolean = false
 )

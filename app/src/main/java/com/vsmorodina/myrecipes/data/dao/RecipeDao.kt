@@ -25,8 +25,10 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE category_id = :categoryId")
     fun getAll(categoryId: Long): LiveData<List<RecipeEntity>>
 
-    @Query("SELECT * FROM recipes WHERE is_favorites = 0")
+    @Query("SELECT * FROM recipes WHERE is_favorite = 1")
     fun getFavouritesRecipe(): LiveData<List<RecipeEntity>>
 
+    @Query("UPDATE recipes SET is_favorite = :isFavorite WHERE id = :recipeId")
+    suspend fun updateFavorite(recipeId: Long, isFavorite: Boolean)
 
 }
