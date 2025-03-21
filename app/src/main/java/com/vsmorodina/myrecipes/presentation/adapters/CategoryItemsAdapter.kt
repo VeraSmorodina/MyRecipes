@@ -1,16 +1,12 @@
 package com.vsmorodina.myrecipes.presentation.adapters
 
-import android.content.Context
 import android.net.Uri
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
@@ -18,7 +14,10 @@ import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
 import java.io.File
 
-class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
+class CategoryItemsAdapter(
+    val onСlickCategory: (categoryId: Long) -> Unit,
+    val onDeleteCategory: (categoryId: Long) -> Unit
+) :
     ListAdapter<CategoryEntity, CategoryItemsAdapter.CategoryItemsViewHolder>(
         CategoriesDiffItemCallback()
     ) {
@@ -28,7 +27,7 @@ class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
 
     override fun onBindViewHolder(holder: CategoryItemsViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener)
+        holder.bind(item, onСlickCategory, onDeleteCategory)
     }
 
     class CategoryItemsViewHolder(val binding: RecipeCategoryItemBinding) :
@@ -41,19 +40,23 @@ class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
             }
         }
 
-        fun bind(item: CategoryEntity, clickListener: (itemId: Long) -> Unit) {
+        fun bind(
+            item: CategoryEntity,
+            clickListener: (itemId: Long) -> Unit,
+            onDeleteCategory: (categoryId: Long) -> Unit
+        ) {
             with(binding) {
                 categoryTitle.text = item.name
                 imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
                 menuDots.setOnClickListener {
-                    showPopup(menuDots)
+                    showPopup(menuDots, { onDeleteCategory(item.id) })
                 }
             }
 
         }
 
-        private fun showPopup(anchorView: View) {
+        private fun showPopup(anchorView: View, onDeleteCategory: () -> Unit) {
             // Загружаем разметку попапа
             val inflater = anchorView.context.getSystemService(LayoutInflater::class.java)
             val popupView: View = inflater.inflate(R.layout.category_actions_popup, null)
@@ -69,7 +72,10 @@ class CategoryItemsAdapter(val clickListener: (categoryId: Long) -> Unit) :
             editButton.setOnClickListener { popupWindow.dismiss() }
 
             val deleteButton = popupView.findViewById<TextView>(R.id.delete_button)
-            deleteButton.setOnClickListener { popupWindow.dismiss() }
+            deleteButton.setOnClickListener {
+                onDeleteCategory()
+                popupWindow.dismiss()
+            }
 
             popupWindow.showAsDropDown(anchorView)
         }

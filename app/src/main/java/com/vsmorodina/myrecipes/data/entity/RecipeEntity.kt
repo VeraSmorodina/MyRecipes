@@ -2,9 +2,18 @@ package com.vsmorodina.myrecipes.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "recipes")
+@Entity(
+    tableName = "recipes",
+    foreignKeys = [ForeignKey(
+        entity = CategoryEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["category_id"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
 data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
