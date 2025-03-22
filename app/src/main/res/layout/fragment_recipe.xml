@@ -10,64 +10,87 @@
             type="com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/gray"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="270dp">
+            android:layout_height="wrap_content"
+            android:background="@color/gray"
+            android:orientation="vertical">
 
-            <ImageView
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
-                android:scaleType="fitXY"
-                android:src="@{viewModel.recipeLiveData.photoUri}" />
+                android:layout_height="270dp">
 
-            <ImageView
-                android:id="@+id/favorite_button"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="top|end"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_favorite" />
-        </FrameLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp"
+                    android:scaleType="fitXY"
+                    android:src="@{viewModel.recipeLiveData.photoUri}" />
 
-        <TextView
-            android:id="@+id/recipeName_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:padding="8dp"
-            android:text="@{viewModel.recipeLiveData.name}"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="Text" />
+                <ImageView
+                    android:id="@+id/favorite_button"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="15dp"
+                    android:src="@drawable/ic_favorite" />
+            </FrameLayout>
 
-        <TextView
-            android:id="@+id/recipeIngredients_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:padding="8dp"
-            android:text="@{viewModel.recipeLiveData.ingredients}"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="Text" />
+            <TextView
+                android:id="@+id/recipeName_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:padding="15dp"
+                android:text="@{viewModel.recipeLiveData.name}"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Text" />
 
-        <TextView
-            android:id="@+id/recipeCookingAlgorithm_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:padding="8dp"
-            android:text="@{viewModel.recipeLiveData.cookingAlgorithm}"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="Text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ingredients"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:padding="15dp"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/recipeIngredients_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:padding="8dp"
+                android:text="@{viewModel.recipeLiveData.ingredients}"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="Text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/algorithm"
+                android:padding="15dp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/recipeCookingAlgorithm_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:padding="8dp"
+                android:text="@{viewModel.recipeLiveData.cookingAlgorithm}"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                tools:text="Text" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </layout>

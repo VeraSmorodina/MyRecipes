@@ -7,4 +7,6 @@
     <string name="nav_item_add">Добавить</string>
     <string name="edit_button_title">Редактировать</string>
     <string name="delete_button_title">Удалить</string>
+    <string name="ingredients">Ингредиенты:</string>
+    <string name="algorithm">Алгоритм:</string>
 </resources>
