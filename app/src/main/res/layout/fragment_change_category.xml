@@ -32,6 +32,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Название категории"
+        app:hintTextColor="@color/gray_very_light"
+        android:textColorHint="@color/gray_very_light"
         app:layout_constraintTop_toBottomOf="@id/image_view"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"

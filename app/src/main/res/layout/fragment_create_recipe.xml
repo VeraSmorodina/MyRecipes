@@ -58,6 +58,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Название рецепта"
+                app:hintTextColor="@color/gray_very_light"
+                android:textColorHint="@color/gray_very_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/category_spinner">
@@ -76,6 +78,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Ингредиенты"
+                app:hintTextColor="@color/gray_very_light"
+                android:textColorHint="@color/gray_very_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recipe_name_layout">
@@ -94,6 +98,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Алгоритм"
+                app:hintTextColor="@color/gray_very_light"
+                android:textColorHint="@color/gray_very_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ingr_name_layout">
