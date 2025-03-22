@@ -25,11 +25,9 @@
                 android:layout_height="300dp"
                 android:layout_margin="20dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:padding="100dp"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/category_label"
@@ -48,8 +46,8 @@
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:background="@color/gray_light"
-                android:popupBackground="@color/gray_light"
                 android:foregroundTint="@color/white"
+                android:popupBackground="@color/gray_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/category_label" />
@@ -67,9 +65,9 @@
                     android:id="@+id/recipe_name_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:layout_marginHorizontal="8dp"
                     android:text="@{viewModel.recipeLiveData.name}"
-                    android:layout_marginHorizontal="8dp" />
+                    android:textColor="@color/white" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,8 +85,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    android:textColor="@color/white"
                     android:text="@{viewModel.recipeLiveData.ingredients}"
+                    android:textColor="@color/white"
                     android:textColorHint="@color/white" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -107,8 +105,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
-                    android:textColor="@color/white"
                     android:text="@{viewModel.recipeLiveData.cookingAlgorithm}"
+                    android:textColor="@color/white"
                     android:textColorHint="@color/white" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,9 +118,9 @@
                 android:layout_marginHorizontal="2dp"
                 android:backgroundTint="@color/gray_very_light"
                 android:text="Сохранить"
-                app:layout_constraintTop_toBottomOf="@id/alg_name_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/alg_name_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

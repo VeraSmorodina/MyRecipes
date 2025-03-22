@@ -1,7 +1,6 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
 import android.Manifest
-import android.R
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
@@ -19,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentChangeRecipeBinding
 import com.vsmorodina.myrecipes.presentation.viewModels.ChangeRecipeViewModel
@@ -106,7 +106,7 @@ class ChangeRecipeFragment : Fragment() {
         val viewModelFactory = ChangeRecipeViewModelFactory(recipeId, recipeDao, categoryDao)
         viewModel = ViewModelProvider(
             this, viewModelFactory
-        ).get(ChangeRecipeViewModel::class.java)
+        )[ChangeRecipeViewModel::class.java]
         binding.viewModel = viewModel
     }
 
@@ -115,7 +115,7 @@ class ChangeRecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val adapter = ArrayAdapter(
             requireContext(),
-            R.layout.simple_spinner_dropdown_item,
+            R.layout.item_category_spinner,
             mutableListOf<String>()
         )
         binding.categorySpinner.adapter = adapter

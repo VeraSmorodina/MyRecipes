@@ -67,7 +67,7 @@
     <fragment
         android:id="@+id/changeRecipeFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.ChangeRecipeFragment"
-        android:label="ChangeRecipeFragment" >
+        android:label="Редактирование рецепта" >
         <argument
             android:name="idRecipeChange"
             app:argType="long" />
@@ -75,7 +75,7 @@
     <fragment
         android:id="@+id/changeCategoryFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.ChangeCategoryFragment"
-        android:label="ChangeCategoryFragment" >
+        android:label="Редактирование категории" >
         <argument
             android:name="categoryId"
             app:argType="long" />
