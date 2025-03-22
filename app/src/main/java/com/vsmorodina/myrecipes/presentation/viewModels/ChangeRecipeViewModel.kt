@@ -79,10 +79,6 @@ class ChangeRecipeViewModel(
         _imagePathLiveData.value = imagePath
     }
 
-    fun setCategoryIndex(index: Int) {
-        _selectedCategoryIndexLiveData.value = index
-    }
-
     fun calculateCategoryIndex() {
         viewModelScope.launch {
             val categoryId = recipeDao.getRecipe(recipeId).categoryId

@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_createCategoryFragment2"
             app:destination="@id/createCategoryFragment2" />
+        <action
+            android:id="@+id/action_categoriesFragment_to_changeCategoryFragment"
+            app:destination="@id/changeCategoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipesFragment"
@@ -67,6 +70,14 @@
         android:label="ChangeRecipeFragment" >
         <argument
             android:name="idRecipeChange"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/changeCategoryFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.ChangeCategoryFragment"
+        android:label="ChangeCategoryFragment" >
+        <argument
+            android:name="categoryId"
             app:argType="long" />
     </fragment>
 </navigation>

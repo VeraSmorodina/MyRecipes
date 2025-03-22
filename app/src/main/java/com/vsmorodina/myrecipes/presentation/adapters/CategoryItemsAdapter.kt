@@ -16,7 +16,8 @@ import java.io.File
 
 class CategoryItemsAdapter(
     val onСlickCategory: (categoryId: Long) -> Unit,
-    val onDeleteCategory: (categoryId: Long) -> Unit
+    val onDeleteCategory: (categoryId: Long) -> Unit,
+    val onChangeCategory: (categoryId: Long) -> Unit
 ) :
     ListAdapter<CategoryEntity, CategoryItemsAdapter.CategoryItemsViewHolder>(
         CategoriesDiffItemCallback()
@@ -27,7 +28,7 @@ class CategoryItemsAdapter(
 
     override fun onBindViewHolder(holder: CategoryItemsViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, onСlickCategory, onDeleteCategory)
+        holder.bind(item, onСlickCategory, onDeleteCategory, onChangeCategory)
     }
 
     class CategoryItemsViewHolder(val binding: RecipeCategoryItemBinding) :
@@ -43,20 +44,22 @@ class CategoryItemsAdapter(
         fun bind(
             item: CategoryEntity,
             clickListener: (itemId: Long) -> Unit,
-            onDeleteCategory: (categoryId: Long) -> Unit
+            onDeleteCategory: (categoryId: Long) -> Unit,
+            onChangeCategory: (categoryId: Long) -> Unit
         ) {
             with(binding) {
                 categoryTitle.text = item.name
                 imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
                 menuDots.setOnClickListener {
-                    showPopup(menuDots, { onDeleteCategory(item.id) })
+                    showPopup(menuDots, { onDeleteCategory(item.id) }, {onChangeCategory(item.id)})
                 }
+
             }
 
         }
 
-        private fun showPopup(anchorView: View, onDeleteCategory: () -> Unit) {
+        private fun showPopup(anchorView: View, onDeleteCategory: () -> Unit, onChangeCategory: () -> Unit) {
             // Загружаем разметку попапа
             val inflater = anchorView.context.getSystemService(LayoutInflater::class.java)
             val popupView: View = inflater.inflate(R.layout.category_actions_popup, null)
@@ -69,7 +72,9 @@ class CategoryItemsAdapter(
             )
 
             val editButton = popupView.findViewById<TextView>(R.id.edit_button)
-            editButton.setOnClickListener { popupWindow.dismiss() }
+            editButton.setOnClickListener {
+                onChangeCategory()
+                popupWindow.dismiss() }
 
             val deleteButton = popupView.findViewById<TextView>(R.id.delete_button)
             deleteButton.setOnClickListener {

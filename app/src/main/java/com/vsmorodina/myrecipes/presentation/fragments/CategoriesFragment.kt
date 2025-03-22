@@ -46,7 +46,12 @@ class CategoriesFragment : Fragment() {
             },
             onDeleteCategory = { categoryId ->
                 viewModel.deleteCategory(categoryId)
-            })
+            },
+            onChangeCategory = {categoryId ->
+                val action = CategoriesFragmentDirections.actionCategoriesFragmentToChangeCategoryFragment(categoryId)
+                findNavController().navigate(action)
+            }
+            )
         binding.tasksList.adapter = adapter
 
 
