@@ -11,9 +11,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/ic_menu_book"
+        android:icon="@drawable/ic_recipes"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_menu_book"
+        android:roundIcon="@drawable/ic_recipes"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyRecipes"
         tools:targetApi="31">
