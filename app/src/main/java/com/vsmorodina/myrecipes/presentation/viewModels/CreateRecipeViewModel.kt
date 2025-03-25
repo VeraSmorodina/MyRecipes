@@ -10,14 +10,19 @@ import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import kotlinx.coroutines.launch
 
+sealed interface DisplayMessage {
+    data class ToastMessage(val message: String) : DisplayMessage
+    data class AlertDialogMessage(val message: String) : DisplayMessage
+}
+
 class CreateRecipeViewModel(
     categoryDao: CategoryDao,
     private val recipeDao: RecipeDao
 ) : ViewModel() {
     val categories = categoryDao.getAllLiveData()
-    private val _errorLiveData = MutableLiveData<String>()
-    val errorLiveData: LiveData<String> = _errorLiveData
 
+    private val _errorLiveData = MutableLiveData<DisplayMessage?>()
+    val errorLiveData: LiveData<DisplayMessage?> = _errorLiveData
 
     private var _imagePathLiveData = MutableLiveData<String>()
     val imagePathLiveData: LiveData<String> = _imagePathLiveData
@@ -33,14 +38,21 @@ class CreateRecipeViewModel(
     ) {
         val categoriesList = categories.value ?: return
 
+        if (categoriesList.isEmpty()) {
+            _errorLiveData.value = DisplayMessage.AlertDialogMessage("Для сохранения рецепта требуется указать категорию. Список категорий пуст. Создать категорию?")
+            _errorLiveData.value = null
+            return
+        }
+
         if (validateParameters(selectedCategoryIndex, categoriesList)) {
-            _errorLiveData.value = "Не удалось сохранить рецепт"
+            _errorLiveData.value = DisplayMessage.ToastMessage("Не удалось сохранить рецепт")
             return
         }
 
         if (name.isBlank()) {
-            _errorLiveData.value =
-                "Не удалось сохранить категорию, название не может быть пустым"
+            _errorLiveData.value = DisplayMessage.ToastMessage(
+                "Не удалось сохранить рецепт, название не может быть пустым"
+            )
             return
         }
         viewModelScope.launch {
@@ -58,7 +70,10 @@ class CreateRecipeViewModel(
         _successSavingCategoryLiveData.value = null
     }
 
-    private fun validateParameters(selectedCategoryIndex: Int, categoriesList: List<CategoryEntity>) =
+    private fun validateParameters(
+        selectedCategoryIndex: Int,
+        categoriesList: List<CategoryEntity>
+    ) =
         selectedCategoryIndex < 0 || categoriesList.isEmpty()
 
     fun saveImagePath(imagePath: String) {

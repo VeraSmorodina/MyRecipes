@@ -83,25 +83,6 @@ class CategoriesFragment : Fragment() {
 
         }
 
-
-//        val recipeDao = dao.recipeDao
-//        binding.taskName.setOnEditorActionListener { _, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                val query = binding.taskName.text.toString()
-//                lifecycleScope.launch {
-//                    val recipes = recipeDao.searchRecipes(query)
-//                    // Обработка найденных рецептов
-//                    for (recipe in recipes) {
-//                        Log.d("SearchResult", recipe.name)
-//                    }
-//                }
-//                true
-//            } else {
-//                false
-//            }
-//        }
-
-
         return view
     }
 

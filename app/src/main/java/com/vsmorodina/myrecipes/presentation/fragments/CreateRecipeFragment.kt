@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +25,7 @@ import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateRecipeBinding
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModelFactory
+import com.vsmorodina.myrecipes.presentation.viewModels.DisplayMessage
 import java.io.File
 
 
@@ -109,6 +112,7 @@ class CreateRecipeFragment : Fragment() {
         )
         binding.categorySpinner.adapter = adapter
         viewModel.categories.observe(viewLifecycleOwner) { newData ->
+            binding.categoryLabel.isVisible = newData.isNotEmpty()
             adapter.clear()
             adapter.addAll(newData.map {
                 it.name
@@ -141,7 +145,25 @@ class CreateRecipeFragment : Fragment() {
 
     private fun bindViewModel(view: View) {
         observeLiveData(viewModel.errorLiveData) {
-            Snackbar.make(view, it, Snackbar.LENGTH_LONG).show()
+            when (it) {
+                is DisplayMessage.AlertDialogMessage -> {
+                    AlertDialog.Builder(requireContext()).setMessage(it.message)
+                        .setPositiveButton("Да") { _, _ ->
+                            findNavController().navigate(R.id.action_createRecipeFragment_to_createCategoryFragment2)
+                        }.setNegativeButton("Нет") { _, _ ->
+
+                        }.create().show()
+                }
+
+                is DisplayMessage.ToastMessage -> Snackbar.make(
+                    view,
+                    it.message,
+                    Snackbar.LENGTH_LONG
+                ).show()
+
+                null -> {}
+            }
+
         }
         observeLiveData(viewModel.successSavingCategoryLiveData) {
             it?.let {
