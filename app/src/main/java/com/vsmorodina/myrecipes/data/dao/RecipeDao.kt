@@ -31,4 +31,6 @@ interface RecipeDao {
     @Query("UPDATE recipes SET is_favorite = :isFavorite WHERE id = :recipeId")
     suspend fun updateFavorite(recipeId: Long, isFavorite: Boolean)
 
+    @Query("SELECT * FROM recipes WHERE name LIKE :query")
+    fun searchRecipes(query: String):  LiveData<List<RecipeEntity>>
 }

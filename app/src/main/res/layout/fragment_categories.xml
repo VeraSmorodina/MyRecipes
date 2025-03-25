@@ -17,15 +17,16 @@
         android:background="@color/gray"
         android:orientation="vertical">
 
-<!--        <EditText-->
-<!--            android:id="@+id/task_name"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="8dp"-->
-<!--            android:hint="Поиск по рецептам"-->
-<!--            android:textColorHint="@color/gray_light"-->
-<!--            android:inputType="text"-->
-<!--            android:text="" />-->
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:hint="Поиск по рецептам"
+            android:textColorHint="@color/gray_very_light"
+            android:textColor="@color/white"
+            android:inputType="text"
+            android:text="" />
 
         <Button
             android:id="@+id/my_button"
@@ -40,8 +41,8 @@
             android:id="@+id/tasks_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/recipe_category_item"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="2" />
+            app:spanCount="2"
+            tools:listitem="@layout/recipe_category_item" />
     </LinearLayout>
 </layout>

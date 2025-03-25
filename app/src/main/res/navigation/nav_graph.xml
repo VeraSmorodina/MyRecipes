@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_changeCategoryFragment"
             app:destination="@id/changeCategoryFragment" />
+        <action
+            android:id="@+id/action_categoriesFragment_to_searchRecipeFragment"
+            app:destination="@id/searchRecipeFragment" />
     </fragment>
     <fragment
         android:id="@+id/recipesFragment"
@@ -79,5 +82,17 @@
         <argument
             android:name="categoryId"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchRecipeFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.SearchRecipeFragment"
+        android:label="Поиск рецептов"
+        tools:layout="@layout/fragment_search_recipe" >
+        <argument
+            android:name="searchRecipeArg"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_searchRecipeFragment_to_recipeFragment"
+            app:destination="@id/recipeFragment" />
     </fragment>
 </navigation>
