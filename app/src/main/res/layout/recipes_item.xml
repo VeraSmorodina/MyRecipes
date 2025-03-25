@@ -8,7 +8,7 @@
     app:cardCornerRadius="15dp"
     app:cardElevation="4dp">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -21,9 +21,10 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="70dp"
+            android:layout_gravity="bottom"
             android:background="@drawable/gradient_overlay" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/recipe_title"
