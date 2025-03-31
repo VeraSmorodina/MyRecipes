@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
+import com.vsmorodina.myrecipes.data.entity.CategoryType
 import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
 import java.io.File
 
@@ -49,17 +51,42 @@ class CategoryItemsAdapter(
         ) {
             with(binding) {
                 categoryTitle.text = item.name
-                imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
+                if (item.isDefault) {
+                    when (item.type) {
+                        CategoryType.NONE -> {}
+                        CategoryType.SOUPS -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s1200
+                            )
+                        )
+
+                        CategoryType.SALADS -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s2004
+                            )
+                        )
+                    }
+                } else
+                    imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
                 menuDots.setOnClickListener {
-                    showPopup(menuDots, { onDeleteCategory(item.id) }, {onChangeCategory(item.id)})
+                    showPopup(
+                        menuDots,
+                        { onDeleteCategory(item.id) },
+                        { onChangeCategory(item.id) })
                 }
 
             }
 
         }
 
-        private fun showPopup(anchorView: View, onDeleteCategory: () -> Unit, onChangeCategory: () -> Unit) {
+        private fun showPopup(
+            anchorView: View,
+            onDeleteCategory: () -> Unit,
+            onChangeCategory: () -> Unit
+        ) {
             // Загружаем разметку попапа
             val inflater = anchorView.context.getSystemService(LayoutInflater::class.java)
             val popupView: View = inflater.inflate(R.layout.category_actions_popup, null)
@@ -74,7 +101,8 @@ class CategoryItemsAdapter(
             val editButton = popupView.findViewById<TextView>(R.id.edit_button)
             editButton.setOnClickListener {
                 onChangeCategory()
-                popupWindow.dismiss() }
+                popupWindow.dismiss()
+            }
 
             val deleteButton = popupView.findViewById<TextView>(R.id.delete_button)
             deleteButton.setOnClickListener {

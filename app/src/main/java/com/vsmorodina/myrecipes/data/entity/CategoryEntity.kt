@@ -16,6 +16,14 @@ data class CategoryEntity(//data переопределяет методы ик�
     val photoUri: String,
 
     @ColumnInfo(name = "is_default")
-    val isDefault: Boolean = false
+    val isDefault: Boolean = false,
+
+    @ColumnInfo(name = "type")
+    val type: CategoryType = CategoryType.NONE
 )
-// Цезарь   помидоры огурцы   шаг 1   шаг 2
+
+enum class CategoryType {
+    NONE,
+    SOUPS,
+    SALADS
+}
