@@ -26,6 +26,12 @@ class RecipesApplication: Application() {
             val categories = listOf(
                 CategoryEntity(name = "Супы", photoUri = "", isDefault = true, type = CategoryType.SOUPS),
                 CategoryEntity(name = "Салаты", photoUri = "", isDefault = true, type = CategoryType.SALADS),
+                CategoryEntity(name = "Выпечка", photoUri = "", isDefault = true, type = CategoryType.BAKING),
+                CategoryEntity(name = "Закуски", photoUri = "", isDefault = true, type = CategoryType.APPETIZERS),
+                CategoryEntity(name = "Мясо", photoUri = "", isDefault = true, type = CategoryType.MEAT),
+                CategoryEntity(name = "Гарниры", photoUri = "", isDefault = true, type = CategoryType.GARNISH),
+                CategoryEntity(name = "Соусы", photoUri = "", isDefault = true, type = CategoryType.SAUCES),
+                CategoryEntity(name = "Напитки", photoUri = "", isDefault = true, type = CategoryType.BEVERAGES),
             )
             CoroutineScope(Dispatchers.IO).launch {
                 categoryDao.insertAll(categories)

@@ -64,7 +64,44 @@ class CategoryItemsAdapter(
                         CategoryType.SALADS -> imageView.setImageDrawable(
                             ContextCompat.getDrawable(
                                 root.context,
-                                R.drawable.s2004
+                                R.drawable.s1
+                            )
+                        )
+
+                        CategoryType.BAKING -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s2
+                            )
+                        )
+                        CategoryType.APPETIZERS -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s3
+                            )
+                        )
+                        CategoryType.MEAT -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s2007
+                            )
+                        )
+                        CategoryType.GARNISH -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s5
+                            )
+                        )
+                        CategoryType.BEVERAGES -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s6
+                            )
+                        )
+                        CategoryType.SAUCES -> imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                root.context,
+                                R.drawable.s7
                             )
                         )
                     }

@@ -25,5 +25,11 @@ data class CategoryEntity(//data переопределяет методы ик�
 enum class CategoryType {
     NONE,
     SOUPS,
-    SALADS
+    SALADS,
+    BAKING,
+    APPETIZERS,
+    MEAT,
+    GARNISH,
+    BEVERAGES,
+    SAUCES
 }
