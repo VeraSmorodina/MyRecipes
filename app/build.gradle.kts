@@ -10,12 +10,14 @@ android {
     namespace = "com.vsmorodina.myrecipes"
     compileSdk = 35
 
+    val version = 4
+
     defaultConfig {
         applicationId = "com.vsmorodina.myrecipes"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.3"
+        versionCode = version
+        versionName = "1.$version"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
