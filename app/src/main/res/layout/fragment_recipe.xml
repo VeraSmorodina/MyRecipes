@@ -26,10 +26,10 @@
                 android:layout_height="270dp">
 
                 <ImageView
+                    android:id="@+id/image_view"
                     android:layout_width="match_parent"
                     android:layout_height="270dp"
-                    android:scaleType="fitXY"
-                    android:src="@{viewModel.recipeLiveData.photoUri}" />
+                    android:scaleType="fitXY" />
 
                 <ImageView
                     android:id="@+id/favorite_button"

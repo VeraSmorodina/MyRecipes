@@ -1,5 +1,6 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentRecipeBinding
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModelFactory
+import java.io.File
 
 class RecipeFragment : Fragment() {
 
@@ -44,6 +46,7 @@ class RecipeFragment : Fragment() {
             this, viewModelFactory
         )[RecipeViewModel::class.java]
         binding.viewModel = viewModel
+
         return view
     }
 
@@ -51,6 +54,12 @@ class RecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData(viewModel.deleteRecipeCompletedLiveData) {
             findNavController().navigateUp()
+        }
+        observeLiveData(viewModel.recipeLiveData){
+           if (it.photoUri.isBlank()){
+               binding.imageView.setImageResource(R.drawable.image_def)
+           }else
+               binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
         }
         observeLiveData(viewModel.isFavoriteLiveData) {
             binding.favoriteButton.setImageResource(

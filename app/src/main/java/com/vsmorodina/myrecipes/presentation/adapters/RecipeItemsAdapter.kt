@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.databinding.RecipesItemBinding
 import java.io.File
@@ -33,7 +34,10 @@ class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
         fun bind(item: RecipeEntity, clickListener: (itemId: Long) -> Unit) {
             with(binding) {
                 recipeTitle.text = item.name
-                imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
+                if (item.photoUri == "") {
+                    imageView.setImageResource(R.drawable.def1)
+                } else
+                    imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
             }
         }

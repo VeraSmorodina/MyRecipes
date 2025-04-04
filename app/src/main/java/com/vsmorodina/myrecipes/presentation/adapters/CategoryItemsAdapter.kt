@@ -105,6 +105,8 @@ class CategoryItemsAdapter(
                             )
                         )
                     }
+                }else if (item.photoUri == ""){
+                    imageView.setImageResource(R.drawable.def1)
                 } else
                     imageView.setImageURI(Uri.fromFile(File(item.photoUri)))
                 root.setOnClickListener { clickListener(item.id) }
