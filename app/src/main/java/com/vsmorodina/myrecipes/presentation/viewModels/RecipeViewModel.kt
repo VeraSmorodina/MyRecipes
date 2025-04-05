@@ -38,4 +38,7 @@ class RecipeViewModel(private val recipeId: Long, private val recipeDao: RecipeD
             _isFavoriteLiveData.value = recipeDao.getRecipe(recipeId).isFavorite
         }
     }
+
+    fun getRecipeInfo() = recipeLiveData.value?.getRecipeInfo()
+
 }

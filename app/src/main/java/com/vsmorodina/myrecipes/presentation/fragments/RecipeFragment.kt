@@ -1,5 +1,6 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -55,11 +56,11 @@ class RecipeFragment : Fragment() {
         observeLiveData(viewModel.deleteRecipeCompletedLiveData) {
             findNavController().navigateUp()
         }
-        observeLiveData(viewModel.recipeLiveData){
-           if (it.photoUri.isBlank()){
-               binding.imageView.setImageResource(R.drawable.image_def)
-           }else
-               binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+        observeLiveData(viewModel.recipeLiveData) {
+            if (it.photoUri.isBlank()) {
+                binding.imageView.setImageResource(R.drawable.image_def)
+            } else
+                binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
         }
         observeLiveData(viewModel.isFavoriteLiveData) {
             binding.favoriteButton.setImageResource(
@@ -93,6 +94,15 @@ class RecipeFragment : Fragment() {
                     true
                 } ?: true
 
+            }
+
+            R.id.action_share -> {
+                val text = viewModel.getRecipeInfo()
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, text)
+                val chooserIntent = Intent.createChooser(intent, "Поделиться рецептом")
+                requireContext().startActivity(chooserIntent)
             }
         }
         return super.onOptionsItemSelected(item)

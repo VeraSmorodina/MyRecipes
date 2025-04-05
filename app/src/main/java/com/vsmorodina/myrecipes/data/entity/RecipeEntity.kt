@@ -35,4 +35,8 @@ data class RecipeEntity(
 
     @ColumnInfo(name = "is_favorite")
     val isFavorite: Boolean = false
-)
+) {
+    fun getRecipeInfo() =
+        "Название рецепта: $name \n\nИнгредиенты: \n$ingredients \n\nАлгоритм приготовления: \n$cookingAlgorithm"
+
+}
