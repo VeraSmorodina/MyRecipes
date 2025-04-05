@@ -43,7 +43,7 @@
         android:layout_gravity="bottom|start"
         android:padding="8dp"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
         tools:text="Category" />
 </androidx.cardview.widget.CardView>
