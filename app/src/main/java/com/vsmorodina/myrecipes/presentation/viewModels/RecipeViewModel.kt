@@ -5,10 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vsmorodina.myrecipes.data.dao.RecipeDao
+import com.vsmorodina.myrecipes.domain.useCase.DeleteRecipeUseCase
+import com.vsmorodina.myrecipes.domain.useCase.GetRecipeUseCase
+import com.vsmorodina.myrecipes.domain.useCase.UpdateFavoriteUseCase
 import kotlinx.coroutines.launch
 
-class RecipeViewModel(private val recipeId: Long, private val recipeDao: RecipeDao) : ViewModel() {
-    val recipeLiveData = recipeDao.getRecipeLiveData(recipeId)
+class RecipeViewModel(
+    private val recipeId: Long,
+    private val getRecipeUseCase: GetRecipeUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
+    private val updateFavoriteUseCase: UpdateFavoriteUseCase
+) : ViewModel() {
+    val recipeLiveData = getRecipeUseCase.invoke(recipeId)
 
     private val _deleteRecipeCompletedLiveData = MutableLiveData<Unit>()
     val deleteRecipeCompletedLiveData: LiveData<Unit> = _deleteRecipeCompletedLiveData
@@ -19,7 +27,7 @@ class RecipeViewModel(private val recipeId: Long, private val recipeDao: RecipeD
     fun deleteRecipe() {
         recipeLiveData.value?.let {
             viewModelScope.launch {
-                recipeDao.delete(it)
+                deleteRecipeUseCase.invoke(it.id)
                 _deleteRecipeCompletedLiveData.value = Unit
             }
         }
@@ -28,15 +36,14 @@ class RecipeViewModel(private val recipeId: Long, private val recipeDao: RecipeD
     fun updateFavorite() {
         viewModelScope.launch {
             val updated = !(_isFavoriteLiveData.value ?: false)
-            recipeDao.updateFavorite(recipeId, updated)
+            updateFavoriteUseCase.invoke(recipeId, updated)
             _isFavoriteLiveData.value = updated
         }
     }
 
-    fun getFavoriteStatus(){
-        viewModelScope.launch {
-            _isFavoriteLiveData.value = recipeDao.getRecipe(recipeId).isFavorite
-        }
+    fun getFavoriteStatus() {
+        TODO("Исправить, при выходе из рецепта лайк не сохраняется")
+        _isFavoriteLiveData.value = getRecipeUseCase.invoke(recipeId).value?.isFavorite ?: false
     }
 
     fun getRecipeInfo() = recipeLiveData.value?.getRecipeInfo()

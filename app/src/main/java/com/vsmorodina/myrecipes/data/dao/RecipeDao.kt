@@ -17,6 +17,9 @@ interface RecipeDao {
     @Delete
     suspend fun delete(recipeEntity: RecipeEntity)
 
+    @Query("DELETE FROM recipes WHERE id = :recipeId")
+    suspend fun deleteById(recipeId: Long)
+
     @Query("SELECT * FROM recipes WHERE id = :id")
     fun getRecipeLiveData(id: Long): LiveData<RecipeEntity>
 

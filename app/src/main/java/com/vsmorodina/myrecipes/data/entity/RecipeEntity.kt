@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 
 @Entity(
     tableName = "recipes",
@@ -36,7 +37,17 @@ data class RecipeEntity(
     @ColumnInfo(name = "is_favorite")
     val isFavorite: Boolean = false
 ) {
-    fun getRecipeInfo() =
-        "Название рецепта: $name \n\nИнгредиенты: \n$ingredients \n\nАлгоритм приготовления: \n$cookingAlgorithm"
+//    fun getRecipeInfo() =
+//        "Название рецепта: $name \n\nИнгредиенты: \n$ingredients \n\nАлгоритм приготовления: \n$cookingAlgorithm"
 
+
+    fun toModel() = Recipe(
+        id = id,
+        categoryId = categoryId,
+        name = name,
+        ingredients = ingredients,
+        cookingAlgorithm = cookingAlgorithm,
+        photoUri = photoUri,
+        isFavorite = isFavorite
+    )
 }

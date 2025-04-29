@@ -13,11 +13,16 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.vsmorodina.myrecipes.R
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentRecipeBinding
+import com.vsmorodina.myrecipes.domain.useCase.DeleteRecipeUseCase
+import com.vsmorodina.myrecipes.domain.useCase.GetRecipeUseCase
+import com.vsmorodina.myrecipes.domain.useCase.UpdateFavoriteUseCase
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModelFactory
 import java.io.File
+import javax.inject.Inject
 
 class RecipeFragment : Fragment() {
 
@@ -25,7 +30,17 @@ class RecipeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: RecipeViewModel
 
+    @Inject
+    lateinit var getRecipeUseCase: GetRecipeUseCase
+
+    @Inject
+    lateinit var deleteRecipeUseCase: DeleteRecipeUseCase
+
+    @Inject
+    lateinit var updateFavoriteUseCase: UpdateFavoriteUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        (requireActivity().application as RecipesApplication).applicationComponent.inject(this)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -40,9 +55,12 @@ class RecipeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val recipeId = RecipeFragmentArgs.fromBundle(requireArguments()).idArg
-        val application = requireNotNull(this.activity).application
-        val dao = AppDatabase.getInstance(application).recipeDao
-        val viewModelFactory = RecipeViewModelFactory(recipeId, dao)
+        val viewModelFactory = RecipeViewModelFactory(
+            recipeId,
+            getRecipeUseCase,
+            deleteRecipeUseCase,
+            updateFavoriteUseCase
+        )
         viewModel = ViewModelProvider(
             this, viewModelFactory
         )[RecipeViewModel::class.java]

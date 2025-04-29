@@ -1,8 +1,12 @@
 package com.vsmorodina.myrecipes.domain.repository
 
+import androidx.lifecycle.LiveData
 import com.vsmorodina.myrecipes.domain.entity.Recipe
 import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
     fun getRecipesByCategory(categoryId: Long): Flow<List<Recipe>>
+    fun getRecipe(recipeId: Long): LiveData<Recipe>
+    suspend fun deleteRecipe(recipeId: Long)
+    suspend fun updateFavorite(recipeId: Long, isFavorite: Boolean)
 }
