@@ -14,6 +14,7 @@ import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.databinding.FragmentSearchRecipeBinding
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
 import com.vsmorodina.myrecipes.presentation.adapters.SearchRecipeItemAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
@@ -59,7 +60,17 @@ class SearchRecipeFragment : Fragment() {
 
 
         observeLiveData(viewModel.recipesLiveData) {
-            adapter.submitList(it)
+            adapter.submitList(it.map {
+                Recipe(
+                    id = it.id,
+                    categoryId = it.categoryId,
+                    name = it.name,
+                    ingredients = it.ingredients,
+                    cookingAlgorithm = it.cookingAlgorithm,
+                    photoUri = it.photoUri,
+                    isFavorite = it.isFavorite
+                )
+            })
         }
 
         return view

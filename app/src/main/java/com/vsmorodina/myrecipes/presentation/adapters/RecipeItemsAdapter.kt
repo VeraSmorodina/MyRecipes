@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.databinding.RecipesItemBinding
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import java.io.File
 
 class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
-    ListAdapter<RecipeEntity, RecipeItemsAdapter.RecipeItemsViewHolder>(RecipeDiffItemCallback()) {
+    ListAdapter<Recipe, RecipeItemsAdapter.RecipeItemsViewHolder>(RecipeDiffItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             : RecipeItemsViewHolder = RecipeItemsViewHolder.inflateFrom(parent)
@@ -31,7 +32,7 @@ class RecipeItemsAdapter(val clickListener: (recipeId: Long) -> Unit) :
             }
         }
 
-        fun bind(item: RecipeEntity, clickListener: (itemId: Long) -> Unit) {
+        fun bind(item: Recipe, clickListener: (itemId: Long) -> Unit) {
             with(binding) {
                 recipeTitle.text = item.name
                 if (item.photoUri == "") {

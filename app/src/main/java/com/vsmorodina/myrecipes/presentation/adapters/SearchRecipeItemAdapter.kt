@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.databinding.RecipesItemBinding
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import java.io.File
 
 class SearchRecipeItemAdapter(private val clickListener: (recipeId: Long) -> Unit) :
-    ListAdapter<RecipeEntity, SearchRecipeItemAdapter.SearchRecipeItemsViewHolder>(
+    ListAdapter<Recipe, SearchRecipeItemAdapter.SearchRecipeItemsViewHolder>(
         RecipeDiffItemCallback()
     ) {
 
@@ -32,7 +32,7 @@ class SearchRecipeItemAdapter(private val clickListener: (recipeId: Long) -> Uni
             }
         }
 
-        fun bind(item: RecipeEntity, clickListener: (itemId: Long) -> Unit) {
+        fun bind(item: Recipe, clickListener: (itemId: Long) -> Unit) {
             with(binding) {
                 recipeTitle.text = item.name
                 imageView.setImageURI(Uri.fromFile(File(item.photoUri)))

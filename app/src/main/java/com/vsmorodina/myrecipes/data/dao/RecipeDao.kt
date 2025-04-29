@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecipeDao {
@@ -23,7 +24,11 @@ interface RecipeDao {
     suspend fun getRecipe(id: Long): RecipeEntity
 
     @Query("SELECT * FROM recipes WHERE category_id = :categoryId")
-    fun getAll(categoryId: Long): LiveData<List<RecipeEntity>>
+    fun getAllLiveData(categoryId: Long): LiveData<List<RecipeEntity>>
+
+     @Query("SELECT * FROM recipes WHERE category_id = :categoryId")
+    fun getAllFlow(categoryId: Long): Flow<List<RecipeEntity>>
+
 
     @Query("SELECT * FROM recipes WHERE is_favorite = 1")
     fun getFavouritesRecipe(): LiveData<List<RecipeEntity>>

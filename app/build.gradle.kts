@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.devtools.ksp)
-    id ("kotlin-kapt")
+    id("kotlin-kapt")
     alias(libs.plugins.safe.args)
 }
 
@@ -45,16 +45,17 @@ android {
 }
 
 dependencies {
-    implementation (libs.androidx.recyclerview)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.androidx.lifecycle.livedata.ktx)
-    implementation (libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
-    ksp (libs.androidx.room.compiler)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 //    implementation(libs.navigation.safe.args.gradle.plugin)
-
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 
 
     implementation(libs.androidx.core.ktx)

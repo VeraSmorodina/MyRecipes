@@ -6,14 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.vsmorodina.myrecipes.data.AppDatabase
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentRecipesBinding
+import com.vsmorodina.myrecipes.domain.useCase.GetRecipesUseCase
 import com.vsmorodina.myrecipes.presentation.adapters.RecipeItemsAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class RecipesFragment : Fragment() {
+    @Inject
+    lateinit var getRecipesUseCase: GetRecipesUseCase
     private var _binding: FragmentRecipesBinding? = null
     private val binding get() = _binding!!
 
@@ -26,9 +33,10 @@ class RecipesFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val categoryId = RecipesFragmentArgs.fromBundle(requireArguments()).categoryId
-        val application = requireNotNull(this.activity).application
-        val dao = AppDatabase.getInstance(application).recipeDao
-        val viewModelFactory = RecipesViewModelFactory(categoryId, dao)
+
+        val application = requireNotNull(this.activity).application as RecipesApplication
+        application.applicationComponent.inject(this)
+        val viewModelFactory = RecipesViewModelFactory(categoryId, getRecipesUseCase)
         val viewModel = ViewModelProvider(
             this, viewModelFactory
         ).get(RecipesViewModel::class.java)
@@ -41,9 +49,14 @@ class RecipesFragment : Fragment() {
         }
         binding.recipeList.adapter = adapter
 
-        viewModel.recipesLiveData.observe(viewLifecycleOwner) {
-            it?.let(adapter::submitList)
+        lifecycleScope.launch {
+            viewModel.recipesFlow.collectLatest {
+                adapter.submitList(it)
+            }
         }
+//        viewModel.recipesLiveData.observe(viewLifecycleOwner) {
+//            it?.let(adapter::submitList)
+//        }
         return view
     }
 
