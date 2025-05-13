@@ -18,7 +18,6 @@ import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
 import com.vsmorodina.myrecipes.presentation.adapters.SearchRecipeItemAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.SearchRecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.SearchRecipeViewModelFactory
 import kotlinx.coroutines.launch

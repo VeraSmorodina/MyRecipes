@@ -11,9 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
-import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.data.entity.CategoryType
 import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
+import com.vsmorodina.myrecipes.domain.entity.Category
 import java.io.File
 
 class CategoryItemsAdapter(
@@ -21,7 +21,7 @@ class CategoryItemsAdapter(
     val onDeleteCategory: (categoryId: Long) -> Unit,
     val onChangeCategory: (categoryId: Long) -> Unit
 ) :
-    ListAdapter<CategoryEntity, CategoryItemsAdapter.CategoryItemsViewHolder>(
+    ListAdapter<Category, CategoryItemsAdapter.CategoryItemsViewHolder>(
         CategoriesDiffItemCallback()
     ) {
 
@@ -44,7 +44,7 @@ class CategoryItemsAdapter(
         }
 
         fun bind(
-            item: CategoryEntity,
+            item: Category,
             clickListener: (itemId: Long) -> Unit,
             onDeleteCategory: (categoryId: Long) -> Unit,
             onChangeCategory: (categoryId: Long) -> Unit

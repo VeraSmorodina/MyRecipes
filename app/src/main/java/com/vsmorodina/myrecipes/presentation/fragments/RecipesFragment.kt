@@ -36,6 +36,7 @@ class RecipesFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application as RecipesApplication
         application.applicationComponent.inject(this)
+
         val viewModelFactory = RecipesViewModelFactory(categoryId, getRecipesUseCase)
         val viewModel = ViewModelProvider(
             this, viewModelFactory

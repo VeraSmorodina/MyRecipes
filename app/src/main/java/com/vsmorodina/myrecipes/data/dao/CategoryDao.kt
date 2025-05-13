@@ -8,6 +8,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
+import com.vsmorodina.myrecipes.data.entity.RecipeEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
@@ -25,6 +27,9 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE id = :id")
     fun getCategoryLiveData(id: Long): LiveData<CategoryEntity>
+
+    @Query("SELECT * FROM categories")
+    fun getAllFlow(): Flow<List<CategoryEntity>>
 
     @Query("SELECT * FROM categories WHERE id = :id")
     suspend fun getCategory(id: Long): CategoryEntity

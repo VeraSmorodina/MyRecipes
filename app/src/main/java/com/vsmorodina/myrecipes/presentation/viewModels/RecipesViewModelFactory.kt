@@ -10,7 +10,7 @@ class RecipesViewModelFactory(private val categoryId: Long, private val useCase:
 
     override fun <T: ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RecipesViewModel::class.java)) {
-            return RecipesViewModel(categoryId, useCase) as T
+            return RecipesViewModel(useCase) as T
         }
         throw IllegalArgumentException("Unknown ViewModel")
     }

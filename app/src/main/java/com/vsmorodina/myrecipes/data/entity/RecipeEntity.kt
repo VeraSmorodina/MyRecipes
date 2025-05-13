@@ -3,6 +3,7 @@ package com.vsmorodina.myrecipes.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.vsmorodina.myrecipes.domain.entity.Recipe
 
@@ -13,7 +14,9 @@ import com.vsmorodina.myrecipes.domain.entity.Recipe
         parentColumns = ["id"],
         childColumns = ["category_id"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["category_id"])] // Добавляем индекс для category_id
+
 )
 data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)

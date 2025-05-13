@@ -7,15 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.vsmorodina.myrecipes.R
-import com.vsmorodina.myrecipes.data.AppDatabase
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
-import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class CategoriesFragment : Fragment() {
+
+//    @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
     private var _binding: FragmentCategoriesBinding? = null
     private val binding get() = _binding!!
 
@@ -27,13 +35,21 @@ class CategoriesFragment : Fragment() {
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val application = requireNotNull(this.activity).application
-        val dao = AppDatabase.getInstance(application)
-        val categoryDao = AppDatabase.getInstance(application).categoryDao
-        val viewModelFactory = CategoriesViewModelFactory(categoryDao)
-        val viewModel = ViewModelProvider(
-            this, viewModelFactory
-        ).get(CategoriesViewModel::class.java)
+
+        val application = requireNotNull(this.activity).application as RecipesApplication
+//        application.applicationComponent.inject(this)
+        appViewModelFactory = application.applicationComponent.getAppViewModelFactory()
+//
+//        val dao = AppDatabase.getInstance(application)
+//        val categoryDao = AppDatabase.getInstance(application).categoryDao
+//        val viewModelFactory = CategoriesViewModelFactory(categoryDao)
+//        val viewModel = ViewModelProvider(
+//            this, viewModelFactory
+//        ).get(CategoriesViewModel::class.java)
+
+
+        val viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(CategoriesViewModel::class.java)
         binding.viewModel = viewModel
 
         val adapter = CategoryItemsAdapter(
@@ -56,12 +72,16 @@ class CategoriesFragment : Fragment() {
         )
         binding.tasksList.adapter = adapter
 
-
-        viewModel.categoriesLiveData.observe(viewLifecycleOwner) {
-            it?.let {
+        lifecycleScope.launch {
+            viewModel.categoriesFlow.collectLatest {
                 adapter.submitList(it)
             }
         }
+//        viewModel.categoriesFlow.observe(viewLifecycleOwner) {
+//            it?.let {
+//                adapter.submitList(it)
+//            }
+//        }
 
         binding.myButton.setOnClickListener {
             findNavController().navigate(R.id.action_categoriesFragment_to_createCategoryFragment2)

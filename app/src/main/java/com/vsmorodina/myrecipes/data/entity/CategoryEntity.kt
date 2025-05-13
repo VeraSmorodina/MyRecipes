@@ -3,6 +3,8 @@ package com.vsmorodina.myrecipes.data.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.vsmorodina.myrecipes.domain.entity.Category
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 
 @Entity(tableName = "categories")
 data class CategoryEntity(//data переопределяет методы икволс, хэшкод, тустринг(возвращает объект в виде строки) и добавляет метод копи, который возвращяет копию объекта
@@ -20,7 +22,15 @@ data class CategoryEntity(//data переопределяет методы ик�
 
     @ColumnInfo(name = "type")
     val type: CategoryType = CategoryType.NONE
-)
+) {
+    fun toModel() = Category(
+        id = id,
+        name = name,
+        photoUri = photoUri,
+        isDefault = isDefault,
+        type = type
+    )
+}
 
 enum class CategoryType {
     NONE,
