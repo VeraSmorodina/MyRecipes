@@ -4,25 +4,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vsmorodina.myrecipes.data.dao.RecipeDao
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.domain.useCase.DeleteRecipeUseCase
 import com.vsmorodina.myrecipes.domain.useCase.GetRecipeUseCase
 import com.vsmorodina.myrecipes.domain.useCase.UpdateFavoriteUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipeViewModel(
-    private val recipeId: Long,
+class RecipeViewModel @Inject constructor(
     private val getRecipeUseCase: GetRecipeUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val updateFavoriteUseCase: UpdateFavoriteUseCase
 ) : ViewModel() {
-    val recipeLiveData = getRecipeUseCase.invoke(recipeId)
+    private var recipeId: Long? = null
+
+    private var _recipeLiveData: LiveData<Recipe> = MutableLiveData()
+    val recipeLiveData: LiveData<Recipe> = _recipeLiveData
 
     private val _deleteRecipeCompletedLiveData = MutableLiveData<Unit>()
     val deleteRecipeCompletedLiveData: LiveData<Unit> = _deleteRecipeCompletedLiveData
 
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
     val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
+
+    fun init(recipeId: Long) {
+        this.recipeId = recipeId
+    }
+
+    fun getRecipe() {
+        recipeId?.let {
+            _recipeLiveData = getRecipeUseCase.invoke(it)
+        }
+    }
 
     fun deleteRecipe() {
         recipeLiveData.value?.let {
@@ -34,16 +47,20 @@ class RecipeViewModel(
     }
 
     fun updateFavorite() {
-        viewModelScope.launch {
-            val updated = !(_isFavoriteLiveData.value ?: false)
-            updateFavoriteUseCase.invoke(recipeId, updated)
-            _isFavoriteLiveData.value = updated
+        recipeId?.let {
+            viewModelScope.launch {
+                val updated = !(_isFavoriteLiveData.value ?: false)
+                updateFavoriteUseCase.invoke(it, updated)
+                _isFavoriteLiveData.value = updated
+            }
         }
     }
 
+    //    TODO("Исправить, при выходе из рецепта лайк не сохраняется")
     fun getFavoriteStatus() {
-        TODO("Исправить, при выходе из рецепта лайк не сохраняется")
-        _isFavoriteLiveData.value = getRecipeUseCase.invoke(recipeId).value?.isFavorite ?: false
+        recipeId?.let {
+            _isFavoriteLiveData.value = getRecipeUseCase.invoke(it).value?.isFavorite ?: false
+        }
     }
 
     fun getRecipeInfo() = recipeLiveData.value?.getRecipeInfo()

@@ -10,19 +10,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentRecipesBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.domain.useCase.GetRecipesUseCase
 import com.vsmorodina.myrecipes.presentation.adapters.RecipeItemsAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RecipesFragment : Fragment() {
     @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
+
+    @Inject
     lateinit var getRecipesUseCase: GetRecipesUseCase
     private var _binding: FragmentRecipesBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: RecipesViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,11 +42,16 @@ class RecipesFragment : Fragment() {
         val application = requireNotNull(this.activity).application as RecipesApplication
         application.applicationComponent.inject(this)
 
-        val viewModelFactory = RecipesViewModelFactory(categoryId, getRecipesUseCase)
-        val viewModel = ViewModelProvider(
-            this, viewModelFactory
-        ).get(RecipesViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(RecipesViewModel::class.java)
         binding.viewModel = viewModel
+        viewModel.getRecipes(categoryId)
+
+//        val viewModelFactory = RecipesViewModelFactory(categoryId, getRecipesUseCase)
+//        val viewModel = ViewModelProvider(
+//            this, viewModelFactory
+//        ).get(RecipesViewModel::class.java)
+//        binding.viewModel = viewModel
 
         val adapter = RecipeItemsAdapter { recipeId ->
             val action = RecipesFragmentDirections

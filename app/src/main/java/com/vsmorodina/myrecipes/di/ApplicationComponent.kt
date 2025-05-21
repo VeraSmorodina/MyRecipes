@@ -18,7 +18,7 @@ interface ApplicationComponent {
 
     fun inject(recipeFragment: RecipeFragment)
 
-//    fun inject(categoriesFragment: CategoriesFragment)
+    fun inject(categoriesFragment: CategoriesFragment)
 
-    fun getAppViewModelFactory(): AppViewModelFactory
+//    fun getAppViewModelFactory(): AppViewModelFactory
 }

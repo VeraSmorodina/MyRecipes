@@ -16,16 +16,18 @@ import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CategoriesFragment : Fragment() {
 
-//    @Inject
+    @Inject
     lateinit var appViewModelFactory: AppViewModelFactory
     private var _binding: FragmentCategoriesBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: CategoriesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +39,8 @@ class CategoriesFragment : Fragment() {
 
 
         val application = requireNotNull(this.activity).application as RecipesApplication
-//        application.applicationComponent.inject(this)
-        appViewModelFactory = application.applicationComponent.getAppViewModelFactory()
+        application.applicationComponent.inject(this)
+//        appViewModelFactory = application.applicationComponent.getAppViewModelFactory()
 //
 //        val dao = AppDatabase.getInstance(application)
 //        val categoryDao = AppDatabase.getInstance(application).categoryDao
@@ -48,7 +50,7 @@ class CategoriesFragment : Fragment() {
 //        ).get(CategoriesViewModel::class.java)
 
 
-        val viewModel =
+        viewModel =
             ViewModelProvider(this, appViewModelFactory).get(CategoriesViewModel::class.java)
         binding.viewModel = viewModel
 
