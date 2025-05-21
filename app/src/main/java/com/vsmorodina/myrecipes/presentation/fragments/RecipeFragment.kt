@@ -16,9 +16,6 @@ import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentRecipeBinding
 import com.vsmorodina.myrecipes.di.AppViewModelFactory
-import com.vsmorodina.myrecipes.domain.useCase.DeleteRecipeUseCase
-import com.vsmorodina.myrecipes.domain.useCase.GetRecipeUseCase
-import com.vsmorodina.myrecipes.domain.useCase.UpdateFavoriteUseCase
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import java.io.File
 import javax.inject.Inject
@@ -31,15 +28,6 @@ class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: RecipeViewModel
-
-//    @Inject
-//    lateinit var getRecipeUseCase: GetRecipeUseCase
-//
-//    @Inject
-//    lateinit var deleteRecipeUseCase: DeleteRecipeUseCase
-//
-//    @Inject
-//    lateinit var updateFavoriteUseCase: UpdateFavoriteUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (requireActivity().application as RecipesApplication).applicationComponent.inject(this)
@@ -85,12 +73,15 @@ class RecipeFragment : Fragment() {
         observeLiveData(viewModel.deleteRecipeCompletedLiveData) {
             findNavController().navigateUp()
         }
-        observeLiveData(viewModel.recipeLiveData) {
-            if (it.photoUri.isBlank()) {
-                binding.imageView.setImageResource(R.drawable.image_def)
-            } else
-                binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+        viewModel.getRecipe()?.let {
+            observeLiveData(it) {
+                if (it.photoUri.isBlank())
+                    binding.imageView.setImageResource(R.drawable.image_def)
+                else
+                    binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+            }
         }
+
         observeLiveData(viewModel.isFavoriteLiveData) {
             binding.favoriteButton.setImageResource(
                 if (it) R.drawable.ic_favorite_red

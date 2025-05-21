@@ -26,6 +26,4 @@ class DatabaseModule {
 
     @Provides
     fun provideCategoryDao(appDatabase: AppDatabase): CategoryDao = appDatabase.categoryDao
-
-
 }

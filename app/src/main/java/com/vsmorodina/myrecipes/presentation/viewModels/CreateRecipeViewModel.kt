@@ -8,18 +8,25 @@ import com.vsmorodina.myrecipes.data.dao.CategoryDao
 import com.vsmorodina.myrecipes.data.dao.RecipeDao
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
+import com.vsmorodina.myrecipes.domain.useCase.GetCategoriesUseCase
+import com.vsmorodina.myrecipes.domain.useCase.GetCategoryLiveDataUseCase
+import com.vsmorodina.myrecipes.domain.useCase.InsertRecipeUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed interface DisplayMessage {
     data class ToastMessage(val message: String) : DisplayMessage
     data class AlertDialogMessage(val message: String) : DisplayMessage
 }
 
-class CreateRecipeViewModel(
-    categoryDao: CategoryDao,
-    private val recipeDao: RecipeDao
+class CreateRecipeViewModel @Inject constructor(
+    private val getCategoryLiveDataUseCase: GetCategoryLiveDataUseCase,
+    private val insertRecipeUseCase: InsertRecipeUseCase
+//    categoryDao: CategoryDao,
+//    private val recipeDao: RecipeDao
 ) : ViewModel() {
-    val categories = categoryDao.getAllLiveData()
+//    val categories = categoryDao.getAllLiveData()
+    val categories = getCategoryLiveDataUseCase.invoke()
 
     private val _errorLiveData = MutableLiveData<DisplayMessage?>()
     val errorLiveData: LiveData<DisplayMessage?> = _errorLiveData
@@ -56,7 +63,7 @@ class CreateRecipeViewModel(
             return
         }
         viewModelScope.launch {
-            recipeDao.insert(
+            insertRecipeUseCase.invoke(
                 RecipeEntity(
                     categoryId = categoriesList[selectedCategoryIndex].id,
                     name = name,
@@ -65,6 +72,15 @@ class CreateRecipeViewModel(
                     photoUri = _imagePathLiveData.value ?: "",
                 )
             )
+//            recipeDao.insert(
+//                RecipeEntity(
+//                    categoryId = categoriesList[selectedCategoryIndex].id,
+//                    name = name,
+//                    ingredients = ingredients,
+//                    cookingAlgorithm = cookingAlgorithm,
+//                    photoUri = _imagePathLiveData.value ?: "",
+//                )
+//            )
         }
         _successSavingCategoryLiveData.value = "Cохранено успешно"
         _successSavingCategoryLiveData.value = null

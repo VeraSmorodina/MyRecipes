@@ -31,14 +31,15 @@ class RecipeViewModel @Inject constructor(
         this.recipeId = recipeId
     }
 
-    fun getRecipe() {
-        recipeId?.let {
+    fun getRecipe(): LiveData<Recipe>? {
+        return recipeId?.let {
             _recipeLiveData = getRecipeUseCase.invoke(it)
+            _recipeLiveData
         }
     }
 
     fun deleteRecipe() {
-        recipeLiveData.value?.let {
+        _recipeLiveData.value?.let {
             viewModelScope.launch {
                 deleteRecipeUseCase.invoke(it.id)
                 _deleteRecipeCompletedLiveData.value = Unit
@@ -63,6 +64,6 @@ class RecipeViewModel @Inject constructor(
         }
     }
 
-    fun getRecipeInfo() = recipeLiveData.value?.getRecipeInfo()
+    fun getRecipeInfo() = _recipeLiveData.value?.getRecipeInfo()
 
 }

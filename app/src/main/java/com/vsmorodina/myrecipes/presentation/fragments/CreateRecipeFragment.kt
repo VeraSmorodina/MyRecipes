@@ -21,16 +21,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vsmorodina.myrecipes.R
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateRecipeBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.DisplayMessage
 import java.io.File
+import javax.inject.Inject
 
 
 class CreateRecipeFragment : Fragment() {
 
+    @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
     private var _binding: FragmentCreateRecipeBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: CreateRecipeViewModel
@@ -133,13 +137,22 @@ class CreateRecipeFragment : Fragment() {
 
     private fun createViewModel() {
         binding.lifecycleOwner = viewLifecycleOwner
-        val application = requireNotNull(this.activity).application
-        val categoryDao = AppDatabase.getInstance(application).categoryDao
-        val recipeDao = AppDatabase.getInstance(application).recipeDao
-        val viewModelFactory = CreateRecipeViewModelFactory(categoryDao, recipeDao)
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        ).get(CreateRecipeViewModel::class.java)
+
+        val application = requireNotNull(this.activity).application as RecipesApplication
+        application.applicationComponent.inject(this)
+
+        viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(CreateRecipeViewModel::class.java)
+
+//        val application = requireNotNull(this.activity).application
+//        val categoryDao = AppDatabase.getInstance(application).categoryDao
+//        val recipeDao = AppDatabase.getInstance(application).recipeDao
+//        val viewModelFactory = CreateRecipeViewModelFactory(categoryDao, recipeDao)
+//        viewModel = ViewModelProvider(
+//            this, viewModelFactory
+//        ).get(CreateRecipeViewModel::class.java)
+
+
         binding.viewModel = viewModel
     }
 

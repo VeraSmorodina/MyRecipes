@@ -3,6 +3,7 @@ package com.vsmorodina.myrecipes.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.vsmorodina.myrecipes.data.dao.RecipeDao
+import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.domain.repository.RecipesRepository
 import kotlinx.coroutines.flow.Flow
@@ -33,4 +34,7 @@ class RecipesRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao
         return recipeDao.updateFavorite(recipeId, isFavorite)
     }
 
+    override suspend fun recipeInsert(recipeEntity: RecipeEntity) {
+        recipeDao.insert(recipeEntity)
+    }
 }
