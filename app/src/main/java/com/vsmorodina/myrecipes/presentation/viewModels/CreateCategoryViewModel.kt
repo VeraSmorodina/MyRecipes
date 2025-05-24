@@ -6,9 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vsmorodina.myrecipes.data.dao.CategoryDao
 import com.vsmorodina.myrecipes.data.entity.CategoryEntity
+import com.vsmorodina.myrecipes.domain.useCase.InsertCategoryUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel() {
+class CreateCategoryViewModel @Inject constructor(
+//    private val categoryDao: CategoryDao
+    private val insertCategoryUseCase: InsertCategoryUseCase
+) :
+    ViewModel() {
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
 
@@ -27,12 +33,18 @@ class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel(
         }
 
         viewModelScope.launch {
-            categoryDao.insert(
+            insertCategoryUseCase.invoke(
                 CategoryEntity(
                     name = name,
                     photoUri = _imagePathLiveData.value ?: "",
                 )
             )
+//            categoryDao.insert(
+//                CategoryEntity(
+//                    name = name,
+//                    photoUri = _imagePathLiveData.value ?: "",
+//                )
+//            )
             _successSavingCategoryLiveData.value = "Категория сохранена успешно"
             _successSavingCategoryLiveData.value = null
         }
@@ -41,5 +53,4 @@ class CreateCategoryViewModel(private val categoryDao: CategoryDao) : ViewModel(
     fun saveImagePath(imagePath: String) {
         _imagePathLiveData.value = imagePath
     }
-
 }

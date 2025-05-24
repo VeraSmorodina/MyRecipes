@@ -8,6 +8,7 @@ import com.vsmorodina.myrecipes.domain.useCase.DeleteCategoryByIdUseCase
 import com.vsmorodina.myrecipes.domain.useCase.GetCategoriesUseCase
 import com.vsmorodina.myrecipes.domain.useCase.GetRecipesUseCase
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
@@ -39,6 +40,11 @@ abstract class ViewModelModule {
     @ViewModelKey(CreateRecipeViewModel::class)
     @Binds
     abstract fun provideCreateRecipeViewModel(createRecipeViewModel: CreateRecipeViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(CreateCategoryViewModel::class)
+    @Binds
+    abstract fun provideCreateCategoryViewModel(createCategoryViewModel: CreateCategoryViewModel): ViewModel
 
     @Binds
     abstract fun provideAppViewModelFactory(appViewModelFactory: AppViewModelFactory): ViewModelProvider.Factory

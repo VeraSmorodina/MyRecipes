@@ -18,17 +18,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.data.AppDatabase
 import com.vsmorodina.myrecipes.databinding.FragmentCreateCategoryBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModelFactory
+import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
 import java.io.File
+import javax.inject.Inject
 
 fun <T> Fragment.observeLiveData(liveData: LiveData<T>, block: (T) -> Unit) {
     liveData.observe(viewLifecycleOwner, block)
 }
 
 class CreateCategoryFragment : Fragment() {
+    @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
     private var _binding: FragmentCreateCategoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: CreateCategoryViewModel
@@ -105,12 +110,18 @@ class CreateCategoryFragment : Fragment() {
     }
 
     private fun createViewModel() {
-        val application = requireNotNull(activity).application
-        val categoryDao = AppDatabase.getInstance(application).categoryDao
-        val viewModelFactory = CreateCategoryViewModelFactory(categoryDao)
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[CreateCategoryViewModel::class.java]
+//        val application = requireNotNull(activity).application
+
+        val application = requireNotNull(this.activity).application as RecipesApplication
+        application.applicationComponent.inject(this)
+        viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(CreateCategoryViewModel::class.java)
+
+//        val categoryDao = AppDatabase.getInstance(application).categoryDao
+//        val viewModelFactory = CreateCategoryViewModelFactory(categoryDao)
+//        viewModel = ViewModelProvider(
+//            this, viewModelFactory
+//        )[CreateCategoryViewModel::class.java]
     }
 
     private fun bindViewModel(view: View) {

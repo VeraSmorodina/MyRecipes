@@ -6,6 +6,7 @@ import com.vsmorodina.myrecipes.di.module.DatabaseModule
 import com.vsmorodina.myrecipes.di.module.RepositoryModule
 import com.vsmorodina.myrecipes.di.module.ViewModelModule
 import com.vsmorodina.myrecipes.presentation.fragments.CategoriesFragment
+import com.vsmorodina.myrecipes.presentation.fragments.CreateCategoryFragment
 import com.vsmorodina.myrecipes.presentation.fragments.CreateRecipeFragment
 import com.vsmorodina.myrecipes.presentation.fragments.RecipeFragment
 import com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment
@@ -22,6 +23,8 @@ interface ApplicationComponent {
     fun inject(categoriesFragment: CategoriesFragment)
 
     fun inject(createRecipeFragment: CreateRecipeFragment)
+
+    fun inject(createCategoryFragment: CreateCategoryFragment)
 
 //    fun getAppViewModelFactory(): AppViewModelFactory
 }
