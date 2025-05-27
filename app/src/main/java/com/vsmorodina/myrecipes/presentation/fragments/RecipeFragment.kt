@@ -51,7 +51,7 @@ class RecipeFragment : Fragment() {
 
         viewModel =
             ViewModelProvider(this, appViewModelFactory).get(RecipeViewModel::class.java)
-        binding.viewModel = viewModel
+//        binding.viewModel = viewModel
         viewModel.init(recipeId)
         viewModel.getRecipe()
 //        val viewModelFactory = RecipeViewModelFactory(
@@ -74,6 +74,7 @@ class RecipeFragment : Fragment() {
             findNavController().navigateUp()
         }
         viewModel.getRecipe()?.let {
+            binding.viewModel = viewModel
             observeLiveData(it) {
                 if (it.photoUri.isBlank())
                     binding.imageView.setImageResource(R.drawable.image_def)

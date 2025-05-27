@@ -37,4 +37,8 @@ class RecipesRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao
     override suspend fun recipeInsert(recipeEntity: RecipeEntity) {
         recipeDao.insert(recipeEntity)
     }
+
+    override fun getFavouritesRecipe(): LiveData<List<RecipeEntity>> {
+        return recipeDao.getFavouritesRecipe()
+    }
 }

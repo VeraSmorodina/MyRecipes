@@ -10,6 +10,7 @@ import com.vsmorodina.myrecipes.domain.useCase.GetRecipesUseCase
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.FavouritesRecipesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
 import dagger.Binds
@@ -45,6 +46,11 @@ abstract class ViewModelModule {
     @ViewModelKey(CreateCategoryViewModel::class)
     @Binds
     abstract fun provideCreateCategoryViewModel(createCategoryViewModel: CreateCategoryViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(FavouritesRecipesViewModel::class)
+    @Binds
+    abstract fun provideFavouritesRecipesViewModel(favouritesRecipesViewModel: FavouritesRecipesViewModel): ViewModel
 
     @Binds
     abstract fun provideAppViewModelFactory(appViewModelFactory: AppViewModelFactory): ViewModelProvider.Factory

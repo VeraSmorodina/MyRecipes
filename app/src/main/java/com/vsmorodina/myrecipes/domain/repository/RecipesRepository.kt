@@ -11,4 +11,5 @@ interface RecipesRepository {
     suspend fun deleteRecipe(recipeId: Long)
     suspend fun updateFavorite(recipeId: Long, isFavorite: Boolean)
     suspend fun recipeInsert(recipeEntity: RecipeEntity)
+    fun getFavouritesRecipe(): LiveData<List<RecipeEntity>>
 }
