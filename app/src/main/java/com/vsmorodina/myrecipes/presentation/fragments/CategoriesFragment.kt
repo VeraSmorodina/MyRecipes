@@ -1,14 +1,13 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.RecipesApplication
@@ -16,7 +15,6 @@ import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,18 +35,8 @@ class CategoriesFragment : Fragment() {
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
 
-
         val application = requireNotNull(this.activity).application as RecipesApplication
         application.applicationComponent.inject(this)
-//        appViewModelFactory = application.applicationComponent.getAppViewModelFactory()
-//
-//        val dao = AppDatabase.getInstance(application)
-//        val categoryDao = AppDatabase.getInstance(application).categoryDao
-//        val viewModelFactory = CategoriesViewModelFactory(categoryDao)
-//        val viewModel = ViewModelProvider(
-//            this, viewModelFactory
-//        ).get(CategoriesViewModel::class.java)
-
 
         viewModel =
             ViewModelProvider(this, appViewModelFactory).get(CategoriesViewModel::class.java)
@@ -79,16 +67,10 @@ class CategoriesFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
-//        viewModel.categoriesFlow.observe(viewLifecycleOwner) {
-//            it?.let {
-//                adapter.submitList(it)
-//            }
-//        }
 
         binding.myButton.setOnClickListener {
             findNavController().navigate(R.id.action_categoriesFragment_to_createCategoryFragment2)
         }
-
 
         with(binding) {
             searchEditText.imeOptions = EditorInfo.IME_ACTION_DONE

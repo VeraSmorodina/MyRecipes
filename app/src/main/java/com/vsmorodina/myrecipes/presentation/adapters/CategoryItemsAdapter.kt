@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vsmorodina.myrecipes.R
-import com.vsmorodina.myrecipes.data.entity.CategoryType
 import com.vsmorodina.myrecipes.databinding.RecipeCategoryItemBinding
 import com.vsmorodina.myrecipes.domain.entity.Category
 import java.io.File
@@ -52,60 +51,15 @@ class CategoryItemsAdapter(
             with(binding) {
                 categoryTitle.text = item.name
                 if (item.isDefault) {
-                    when (item.type) {
-                        CategoryType.NONE -> {}
-                        CategoryType.SOUPS -> imageView.setImageDrawable(
+                    item.getDefaultCategoryImage()?.let {
+                        imageView.setImageDrawable(
                             ContextCompat.getDrawable(
                                 root.context,
-                                R.drawable.s1200
-                            )
-                        )
-
-                        CategoryType.SALADS -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s1
-                            )
-                        )
-
-                        CategoryType.BAKING -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s2
-                            )
-                        )
-                        CategoryType.APPETIZERS -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s3
-                            )
-                        )
-                        CategoryType.MEAT -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s2007
-                            )
-                        )
-                        CategoryType.GARNISH -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s5
-                            )
-                        )
-                        CategoryType.BEVERAGES -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s6
-                            )
-                        )
-                        CategoryType.SAUCES -> imageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                root.context,
-                                R.drawable.s7
+                                it
                             )
                         )
                     }
-                }else if (item.photoUri == ""){
+                } else if (item.photoUri == "") {
                     imageView.setImageResource(R.drawable.def1)
                 } else
                     imageView.setImageURI(Uri.fromFile(File(item.photoUri)))

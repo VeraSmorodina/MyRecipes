@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
     fun getCategoriesLiveData(): LiveData<List<CategoryEntity>>
+//    fun getCategoryLiveData(categoryId: Long): LiveData<CategoryEntity>
     fun getCategories(): Flow<List<Category>>
     suspend fun deleteCategoryById(categoryId: Long)
     suspend fun insertCategory(categoryEntity: CategoryEntity)
+    fun getCategoryLiveData(categoryId: Long):LiveData<Category>
+    suspend fun updateCategory(categoryEntity: CategoryEntity)
+//    suspend fun updateCategory(category: Category)
 }

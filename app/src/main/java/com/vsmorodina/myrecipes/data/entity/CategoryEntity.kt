@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.vsmorodina.myrecipes.domain.entity.Category
-import com.vsmorodina.myrecipes.domain.entity.Recipe
 
 @Entity(tableName = "categories")
 data class CategoryEntity(//data переопределяет методы икволс, хэшкод, тустринг(возвращает объект в виде строки) и добавляет метод копи, который возвращяет копию объекта

@@ -7,23 +7,29 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
-import com.vsmorodina.myrecipes.data.AppDatabase
+import com.vsmorodina.myrecipes.R
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentChangeCategoryBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.presentation.viewModels.ChangeCategoryViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.ChangeCategoryViewModelFactory
 import java.io.File
+import javax.inject.Inject
 
 class ChangeCategoryFragment : Fragment() {
+    @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
+
     private var _binding: FragmentChangeCategoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: ChangeCategoryViewModel
@@ -61,7 +67,8 @@ class ChangeCategoryFragment : Fragment() {
         initSaveCategoryButton()
         initImageView()
 
-        return view    }
+        return view
+    }
 
     private fun initImageView() {
         binding.imageView.setOnClickListener {
@@ -99,13 +106,13 @@ class ChangeCategoryFragment : Fragment() {
     }
 
     private fun createViewModel() {
-        val application = requireNotNull(activity).application
-        val categoryDao = AppDatabase.getInstance(application).categoryDao
+        val application = requireNotNull(this.activity).application as RecipesApplication
+        application.applicationComponent.inject(this)
+        viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(ChangeCategoryViewModel::class.java)
         val categoryId = ChangeCategoryFragmentArgs.fromBundle(requireArguments()).categoryId
-        val viewModelFactory = ChangeCategoryViewModelFactory(categoryId,categoryDao)
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[ChangeCategoryViewModel::class.java]
+        viewModel.init(categoryId)
+        viewModel.getCategory()
     }
 
     private fun bindViewModel(view: View) {
@@ -122,9 +129,23 @@ class ChangeCategoryFragment : Fragment() {
             }
         }
 
-        observeLiveData(viewModel.categoryLiveData){
-            binding.editText.setText(it.name)
-            binding.imageView.setImageURI(Uri.parse(it.photoUri))
+        viewModel.getCategory()?.let {
+            observeLiveData(it) {
+                binding.editText.setText(it.name)
+                if (it.isDefault) {
+                    it.getDefaultCategoryImage()?.let {
+                        binding.imageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                it
+                            )
+                        )
+                    }
+                } else if (it.photoUri == "") {
+                    binding.imageView.setImageResource(R.drawable.def1)
+                } else
+                    binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+            }
         }
     }
 

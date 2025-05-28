@@ -8,11 +8,13 @@ import com.vsmorodina.myrecipes.domain.useCase.DeleteCategoryByIdUseCase
 import com.vsmorodina.myrecipes.domain.useCase.GetCategoriesUseCase
 import com.vsmorodina.myrecipes.domain.useCase.GetRecipesUseCase
 import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.ChangeCategoryViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateCategoryViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.CreateRecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.FavouritesRecipesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.SearchRecipeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -51,6 +53,16 @@ abstract class ViewModelModule {
     @ViewModelKey(FavouritesRecipesViewModel::class)
     @Binds
     abstract fun provideFavouritesRecipesViewModel(favouritesRecipesViewModel: FavouritesRecipesViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(ChangeCategoryViewModel::class)
+    @Binds
+    abstract fun provideChangeCategoryViewModel(changeCategoryViewModel: ChangeCategoryViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(SearchRecipeViewModel::class)
+    @Binds
+    abstract fun provideSearchRecipeViewModel(searchRecipeViewModel: SearchRecipeViewModel): ViewModel
 
     @Binds
     abstract fun provideAppViewModelFactory(appViewModelFactory: AppViewModelFactory): ViewModelProvider.Factory

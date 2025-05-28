@@ -26,5 +26,14 @@ class CategoryRepositoryImpl @Inject constructor(private val categoryDao: Catego
 
     override suspend fun deleteCategoryById(categoryId: Long) = categoryDao.deleteById(categoryId)
 
-    override suspend fun insertCategory(categoryEntity: CategoryEntity) = categoryDao.insert(categoryEntity)
+    override suspend fun insertCategory(categoryEntity: CategoryEntity) =
+        categoryDao.insert(categoryEntity)
+
+    override fun getCategoryLiveData(categoryId: Long): LiveData<Category> {
+        return categoryDao.getCategoryLiveData(categoryId).map { it.toModel() }
+    }
+
+    override suspend fun updateCategory(categoryEntity: CategoryEntity) {
+        categoryDao.update(categoryEntity)
+    }
 }
