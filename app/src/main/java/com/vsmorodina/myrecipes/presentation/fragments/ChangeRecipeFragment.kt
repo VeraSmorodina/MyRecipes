@@ -16,16 +16,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vsmorodina.myrecipes.R
-import com.vsmorodina.myrecipes.data.AppDatabase
+import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentChangeRecipeBinding
+import com.vsmorodina.myrecipes.di.AppViewModelFactory
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.presentation.viewModels.ChangeRecipeViewModel
-import com.vsmorodina.myrecipes.presentation.viewModels.ChangeRecipeViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.File
+import javax.inject.Inject
 
 class ChangeRecipeFragment : Fragment() {
+    @Inject
+    lateinit var appViewModelFactory: AppViewModelFactory
 
     private var _binding: FragmentChangeRecipeBinding? = null
     private val binding get() = _binding!!
@@ -97,16 +104,24 @@ class ChangeRecipeFragment : Fragment() {
 
     private fun createViewModel() {
         val recipeId = ChangeRecipeFragmentArgs.fromBundle(requireArguments()).idRecipeChange
-
-
         binding.lifecycleOwner = viewLifecycleOwner
-        val application = requireNotNull(this.activity).application
-        val recipeDao = AppDatabase.getInstance(application).recipeDao
-        val categoryDao = AppDatabase.getInstance(application).categoryDao
-        val viewModelFactory = ChangeRecipeViewModelFactory(recipeId, recipeDao, categoryDao)
-        viewModel = ViewModelProvider(
-            this, viewModelFactory
-        )[ChangeRecipeViewModel::class.java]
+
+        val application = requireNotNull(this.activity).application as RecipesApplication
+        application.applicationComponent.inject(this)
+        viewModel =
+            ViewModelProvider(this, appViewModelFactory).get(ChangeRecipeViewModel::class.java)
+        viewModel.initRecipe(recipeId)
+        viewModel.getRecipe()
+        viewModel.getCategories()
+
+//        val categoryId = ChangeCategoryFragmentArgs.fromBundle(requireArguments()).categoryId
+//        val application = requireNotNull(this.activity).application
+//        val recipeDao = AppDatabase.getInstance(application).recipeDao
+//        val categoryDao = AppDatabase.getInstance(application).categoryDao
+//        val viewModelFactory = ChangeRecipeViewModelFactory(recipeId, recipeDao, categoryDao)
+//        viewModel = ViewModelProvider(
+//            this, viewModelFactory
+//        )[ChangeRecipeViewModel::class.java]
         binding.viewModel = viewModel
     }
 
@@ -119,13 +134,27 @@ class ChangeRecipeFragment : Fragment() {
             mutableListOf<String>()
         )
         binding.categorySpinner.adapter = adapter
-        viewModel.categories.observe(viewLifecycleOwner) { newData ->
-            adapter.clear()
-            adapter.addAll(newData.map {
-                it.name
-            })
-            adapter.notifyDataSetChanged()
+
+
+//        viewModel.categoriesFlow.observe(viewLifecycleOwner) { newData ->
+//            adapter.clear()
+//            adapter.addAll(newData.map {
+//                it.name
+//            })
+//            adapter.notifyDataSetChanged()
+//        }
+
+        lifecycleScope.launch {
+            viewModel.categoriesFlow.collectLatest { newData ->
+                adapter.clear()
+                adapter.addAll(newData.map {
+                    it.name
+                })
+                adapter.notifyDataSetChanged()
+            }
+
         }
+
 
 /////////////////////////
 
@@ -157,8 +186,20 @@ class ChangeRecipeFragment : Fragment() {
         observeLiveData(viewModel.selectedCategoryIndexLiveData) {
             binding.categorySpinner.setSelection(it)
         }
-        observeLiveData(viewModel.recipeLiveData){
-            binding.imageView.setImageURI(Uri.parse(it.photoUri))
+        observeLiveData(viewModel.recipeLiveData) {
+            if (it.photoUri.isBlank())
+                binding.imageView.setImageResource(R.drawable.image_def)
+            else
+                binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+            fillRecipeFields(it)
+        }
+    }
+
+    private fun fillRecipeFields(recipe: Recipe) {
+        with(binding) {
+            recipeNameEditText.setText(recipe.name)
+            ingrNameEditText.setText(recipe.ingredients)
+            algNameEditText.setText(recipe.cookingAlgorithm)
         }
     }
 

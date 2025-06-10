@@ -47,12 +47,6 @@ class RecipesFragment : Fragment() {
         binding.viewModel = viewModel
         viewModel.getRecipes(categoryId)
 
-//        val viewModelFactory = RecipesViewModelFactory(categoryId, getRecipesUseCase)
-//        val viewModel = ViewModelProvider(
-//            this, viewModelFactory
-//        ).get(RecipesViewModel::class.java)
-//        binding.viewModel = viewModel
-
         val adapter = RecipeItemsAdapter { recipeId ->
             val action = RecipesFragmentDirections
                 .actionRecipesFragmentToRecipeFragment(recipeId)
@@ -65,9 +59,6 @@ class RecipesFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
-//        viewModel.recipesLiveData.observe(viewLifecycleOwner) {
-//            it?.let(adapter::submitList)
-//        }
         return view
     }
 

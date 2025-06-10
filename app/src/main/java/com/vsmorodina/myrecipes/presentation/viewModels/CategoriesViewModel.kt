@@ -7,16 +7,6 @@ import com.vsmorodina.myrecipes.domain.useCase.GetCategoriesUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//class CategoriesViewModel(val dao: CategoryDao) : ViewModel() {
-//    val categoriesLiveData = dao.getAllLiveData()
-//
-//    fun deleteCategory(categoryId: Long){
-//        viewModelScope.launch {
-//            dao.deleteById(categoryId = categoryId)
-//        }
-//    }
-//}
-
 class CategoriesViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteCategoryByIdUseCase: DeleteCategoryByIdUseCase

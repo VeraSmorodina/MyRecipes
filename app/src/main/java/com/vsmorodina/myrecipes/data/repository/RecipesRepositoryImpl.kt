@@ -1,7 +1,6 @@
 package com.vsmorodina.myrecipes.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.vsmorodina.myrecipes.data.dao.RecipeDao
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.domain.entity.Recipe
@@ -20,10 +19,8 @@ class RecipesRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao
         }
     }
 
-    override fun getRecipe(recipeId: Long): LiveData<Recipe> {
-        return recipeDao.getRecipeLiveData(recipeId).map {
-            it.toModel()
-        }
+    override suspend fun getRecipe(recipeId: Long): Recipe {
+        return recipeDao.getRecipe(recipeId).toModel()
     }
 
     override suspend fun deleteRecipe(recipeId: Long) {

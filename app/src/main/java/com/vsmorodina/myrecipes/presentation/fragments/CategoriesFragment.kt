@@ -84,9 +84,7 @@ class CategoriesFragment : Fragment() {
                 }
                 true
             }
-
         }
-
         return view
     }
 

@@ -16,6 +16,7 @@ import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.RecipesApplication
 import com.vsmorodina.myrecipes.databinding.FragmentRecipeBinding
 import com.vsmorodina.myrecipes.di.AppViewModelFactory
+import com.vsmorodina.myrecipes.domain.entity.Recipe
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import java.io.File
 import javax.inject.Inject
@@ -48,23 +49,11 @@ class RecipeFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application as RecipesApplication
         application.applicationComponent.inject(this)
-
         viewModel =
             ViewModelProvider(this, appViewModelFactory).get(RecipeViewModel::class.java)
-//        binding.viewModel = viewModel
         viewModel.init(recipeId)
         viewModel.getRecipe()
-//        val viewModelFactory = RecipeViewModelFactory(
-//            recipeId,
-//            getRecipeUseCase,
-//            deleteRecipeUseCase,
-//            updateFavoriteUseCase
-//        )
-//        viewModel = ViewModelProvider(
-//            this, viewModelFactory
-//        )[RecipeViewModel::class.java]
         binding.viewModel = viewModel
-
         return view
     }
 
@@ -73,16 +62,13 @@ class RecipeFragment : Fragment() {
         observeLiveData(viewModel.deleteRecipeCompletedLiveData) {
             findNavController().navigateUp()
         }
-        viewModel.getRecipe()?.let {
-            binding.viewModel = viewModel
-            observeLiveData(it) {
-                if (it.photoUri.isBlank())
-                    binding.imageView.setImageResource(R.drawable.image_def)
-                else
-                    binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
-            }
+        observeLiveData(viewModel.recipeLiveData) {
+            if (it.photoUri.isBlank())
+                binding.imageView.setImageResource(R.drawable.image_def)
+            else
+                binding.imageView.setImageURI(Uri.fromFile(File(it.photoUri)))
+            fillRecipeFields(it)
         }
-
         observeLiveData(viewModel.isFavoriteLiveData) {
             binding.favoriteButton.setImageResource(
                 if (it) R.drawable.ic_favorite_red
@@ -92,6 +78,14 @@ class RecipeFragment : Fragment() {
         viewModel.getFavoriteStatus()
         binding.favoriteButton.setOnClickListener {
             viewModel.updateFavorite()
+        }
+    }
+
+    private fun fillRecipeFields(recipe: Recipe) {
+        with(binding) {
+            recipeNameTitle.text = recipe.name
+            recipeIngredientsTitle.text = recipe.ingredients
+            recipeCookingAlgorithmTitle.text = recipe.cookingAlgorithm
         }
     }
 
@@ -108,13 +102,11 @@ class RecipeFragment : Fragment() {
             }
 
             R.id.action_change -> {
-                viewModel.recipeLiveData.value?.id?.let { recipeId ->
-                    val action =
-                        RecipeFragmentDirections.actionRecipeFragmentToChangeRecipeFragment(recipeId)
-                    findNavController().navigate(action)
-                    true
-                } ?: true
-
+                val recipeId = RecipeFragmentArgs.fromBundle(requireArguments()).idArg
+                val action =
+                    RecipeFragmentDirections.actionRecipeFragmentToChangeRecipeFragment(recipeId)
+                findNavController().navigate(action)
+                return true
             }
 
             R.id.action_share -> {

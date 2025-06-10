@@ -4,19 +4,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vsmorodina.myrecipes.data.dao.CategoryDao
-import com.vsmorodina.myrecipes.data.dao.RecipeDao
-import com.vsmorodina.myrecipes.data.entity.CategoryEntity
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
+import com.vsmorodina.myrecipes.domain.entity.Category
+import com.vsmorodina.myrecipes.domain.entity.Recipe
+import com.vsmorodina.myrecipes.domain.useCase.GetCategoriesUseCase
+import com.vsmorodina.myrecipes.domain.useCase.GetCategoryIdUseCase
+import com.vsmorodina.myrecipes.domain.useCase.GetRecipeUseCase
+import com.vsmorodina.myrecipes.domain.useCase.InsertRecipeUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChangeRecipeViewModel(
-    val recipeId: Long,
-    val recipeDao: RecipeDao,
-    val categoryDao: CategoryDao
+class ChangeRecipeViewModel @Inject constructor(
+    private val getRecipeUseCase: GetRecipeUseCase,
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val insertRecipeUseCase: InsertRecipeUseCase,
+    private val getCategoryIdUseCase: GetCategoryIdUseCase
 ) : ViewModel() {
-    val recipeLiveData = recipeDao.getRecipeLiveData(recipeId)
-    val categories = categoryDao.getAllLiveData()
+    private var recipeId: Long? = null
+
+    private var _recipeLiveData = MutableLiveData<Recipe>()
+    val recipeLiveData: LiveData<Recipe> = _recipeLiveData
+
+    private var _categoriesFlow: MutableStateFlow<List<Category>> =
+        MutableStateFlow(emptyList())
+    val categoriesFlow: Flow<List<Category>> = _categoriesFlow
 
     private val _errorLiveData = MutableLiveData<String>()
     val errorLiveData: LiveData<String> = _errorLiveData
@@ -31,13 +45,33 @@ class ChangeRecipeViewModel(
     val selectedCategoryIndexLiveData: LiveData<Int> = _selectedCategoryIndexLiveData
 
 
+    fun initRecipe(recipeId: Long) {
+        this.recipeId = recipeId
+    }
+
+    fun getRecipe() {
+        recipeId?.let {
+            viewModelScope.launch {
+                _recipeLiveData.value = getRecipeUseCase.invoke(it)
+            }
+        }
+    }
+
+    fun getCategories() {
+        viewModelScope.launch {
+            getCategoriesUseCase.invoke().collectLatest {
+                _categoriesFlow.emit(it)
+            }
+        }
+    }
+
     fun changeRecipe(
         selectedCategoryIndex: Int,
         name: String,
         ingredients: String,
         cookingAlgorithm: String,
     ) {
-        val categoriesList = categories.value ?: return
+        val categoriesList = _categoriesFlow.value
 
         if (validateParameters(selectedCategoryIndex, categoriesList)) {
             _errorLiveData.value = "Не удалось сохранить рецепт"
@@ -49,21 +83,24 @@ class ChangeRecipeViewModel(
                 "Не удалось сохранить категорию, название не может быть пустым"
             return
         }
-        viewModelScope.launch {
-            recipeDao.insert(
-                RecipeEntity(
-                    id = recipeId,
-                    categoryId = categoriesList[selectedCategoryIndex].id,
-                    name = name,
-                    ingredients = ingredients,
-                    cookingAlgorithm = cookingAlgorithm,
-                    photoUri = when {
-                        _imagePathLiveData.value != null ->  _imagePathLiveData.value ?: ""
-                        _imagePathLiveData.value == null -> recipeLiveData.value?.photoUri ?: ""
-                        else -> ""
-                    },
+
+        recipeId?.let {
+            viewModelScope.launch {
+                insertRecipeUseCase.invoke(
+                    RecipeEntity(
+                        id = it,
+                        categoryId = categoriesList[selectedCategoryIndex].id,
+                        name = name,
+                        ingredients = ingredients,
+                        cookingAlgorithm = cookingAlgorithm,
+                        photoUri = when {
+                            _imagePathLiveData.value != null -> _imagePathLiveData.value ?: ""
+                            _imagePathLiveData.value == null -> recipeLiveData.value?.photoUri ?: ""
+                            else -> ""
+                        },
+                    )
                 )
-            )
+            }
         }
         _successSavingRecipeLiveData.value = "Cохранено успешно"
         _successSavingRecipeLiveData.value = null
@@ -71,7 +108,7 @@ class ChangeRecipeViewModel(
 
     private fun validateParameters(
         selectedCategoryIndex: Int,
-        categoriesList: List<CategoryEntity>
+        categoriesList: List<Category>
     ) =
         selectedCategoryIndex < 0 || categoriesList.isEmpty()
 
@@ -80,11 +117,15 @@ class ChangeRecipeViewModel(
     }
 
     fun calculateCategoryIndex() {
-        viewModelScope.launch {
-            val categoryId = recipeDao.getRecipe(recipeId).categoryId
-            val category = categoryDao.getCategory(categoryId)
-            val categoriesList = categoryDao.getAll()
-            _selectedCategoryIndexLiveData.value = categoriesList.indexOf(category)
+        recipeId?.let {
+            viewModelScope.launch {
+                val categoryId = _recipeLiveData.value?.categoryId
+                categoryId?.let {
+                    val category = getCategoryIdUseCase.invoke(it).value
+                    val categoriesList = _categoriesFlow.value
+                    _selectedCategoryIndexLiveData.value = categoriesList.indexOf(category)
+                }
+            }
         }
     }
 }

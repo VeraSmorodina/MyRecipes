@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RecipesRepository {
     fun getRecipesByCategory(categoryId: Long): Flow<List<Recipe>>
-    fun getRecipe(recipeId: Long): LiveData<Recipe>
+    suspend fun getRecipe(recipeId: Long): Recipe
     suspend fun deleteRecipe(recipeId: Long)
     suspend fun updateFavorite(recipeId: Long, isFavorite: Boolean)
     suspend fun recipeInsert(recipeEntity: RecipeEntity)

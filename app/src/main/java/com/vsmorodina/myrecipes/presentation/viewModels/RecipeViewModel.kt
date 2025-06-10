@@ -18,7 +18,7 @@ class RecipeViewModel @Inject constructor(
 ) : ViewModel() {
     private var recipeId: Long? = null
 
-    private var _recipeLiveData: LiveData<Recipe> = MutableLiveData()
+    private var _recipeLiveData = MutableLiveData<Recipe>()
     val recipeLiveData: LiveData<Recipe> = _recipeLiveData
 
     private val _deleteRecipeCompletedLiveData = MutableLiveData<Unit>()
@@ -31,10 +31,11 @@ class RecipeViewModel @Inject constructor(
         this.recipeId = recipeId
     }
 
-    fun getRecipe(): LiveData<Recipe>? {
-        return recipeId?.let {
-            _recipeLiveData = getRecipeUseCase.invoke(it)
-            _recipeLiveData
+    fun getRecipe() {
+        recipeId?.let {
+            viewModelScope.launch {
+                _recipeLiveData.value = getRecipeUseCase.invoke(it)
+            }
         }
     }
 
@@ -60,10 +61,11 @@ class RecipeViewModel @Inject constructor(
     //    TODO("Исправить, при выходе из рецепта лайк не сохраняется")
     fun getFavoriteStatus() {
         recipeId?.let {
-            _isFavoriteLiveData.value = getRecipeUseCase.invoke(it).value?.isFavorite ?: false
+            viewModelScope.launch {
+                _isFavoriteLiveData.value = getRecipeUseCase.invoke(it).isFavorite
+            }
         }
     }
 
     fun getRecipeInfo() = _recipeLiveData.value?.getRecipeInfo()
-
 }
