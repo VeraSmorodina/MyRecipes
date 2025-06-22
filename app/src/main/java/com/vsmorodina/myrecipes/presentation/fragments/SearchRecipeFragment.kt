@@ -1,29 +1,18 @@
 package com.vsmorodina.myrecipes.presentation.fragments
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.vsmorodina.myrecipes.R
 import com.vsmorodina.myrecipes.RecipesApplication
-import com.vsmorodina.myrecipes.data.AppDatabase
-import com.vsmorodina.myrecipes.databinding.FragmentCategoriesBinding
 import com.vsmorodina.myrecipes.databinding.FragmentSearchRecipeBinding
 import com.vsmorodina.myrecipes.di.AppViewModelFactory
 import com.vsmorodina.myrecipes.domain.entity.Recipe
-import com.vsmorodina.myrecipes.presentation.adapters.CategoryItemsAdapter
 import com.vsmorodina.myrecipes.presentation.adapters.SearchRecipeItemAdapter
-import com.vsmorodina.myrecipes.presentation.viewModels.CategoriesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.SearchRecipeViewModel
-import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 class SearchRecipeFragment : Fragment() {
@@ -36,11 +25,10 @@ class SearchRecipeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchRecipeBinding.inflate(inflater, container, false)
         val view = binding.root
         binding.lifecycleOwner = viewLifecycleOwner
-
 
         val query = SearchRecipeFragmentArgs.fromBundle(requireArguments()).searchRecipeArg
 
@@ -52,14 +40,6 @@ class SearchRecipeFragment : Fragment() {
 
         viewModel.init(query)
         viewModel.getRecipes()
-
-//        val application = requireNotNull(this.activity).application
-//        val dao = AppDatabase.getInstance(application)
-//        val recipeDao = AppDatabase.getInstance(application).recipeDao
-//        val viewModelFactory = SearchRecipeViewModelFactory(query, recipeDao)
-//        val viewModel = ViewModelProvider(
-//            this, viewModelFactory
-//        ).get(SearchRecipeViewModel::class.java)
         binding.viewModel = viewModel
 
 
@@ -74,23 +54,7 @@ class SearchRecipeFragment : Fragment() {
         )
         binding.recipeList.adapter = adapter
 
-
-//        observeLiveData(viewModel.recipesLiveData) {
-//            adapter.submitList(it.map {
-//                Recipe(
-//                    id = it.id,
-//                    categoryId = it.categoryId,
-//                    name = it.name,
-//                    ingredients = it.ingredients,
-//                    cookingAlgorithm = it.cookingAlgorithm,
-//                    photoUri = it.photoUri,
-//                    isFavorite = it.isFavorite
-//                )
-//            })
-//        }
-
         viewModel.getRecipes()?.let {
-//            observeLiveData(viewModel.recipesLiveData)
             observeLiveData(it) {
                 adapter.submitList(it.map {
                     Recipe(
@@ -105,8 +69,6 @@ class SearchRecipeFragment : Fragment() {
                 })
             }
         }
-
         return view
     }
-
 }
