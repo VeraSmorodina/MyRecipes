@@ -10,7 +10,7 @@ android {
     namespace = "com.vsmorodina.myrecipes"
     compileSdk = 35
 
-    val version = 7
+    val version = 8
 
     defaultConfig {
         applicationId = "com.vsmorodina.myrecipes"
@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
+    // org.json из Android SDK в JVM-тестах — заглушка, нужна настоящая реализация
+    testImplementation(libs.org.json)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

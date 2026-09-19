@@ -9,4 +9,23 @@
     <string name="delete_button_title">Удалить</string>
     <string name="ingredients">Ингредиенты:</string>
     <string name="algorithm">Алгоритм:</string>
+
+    <string name="settings_title">Настройки</string>
+    <string name="settings_backup_title">Резервная копия</string>
+    <string name="settings_export_description">Экспорт сохраняет все категории, рецепты и их фотографии в один ZIP-файл. Его можно положить в облако или перенести на другое устройство.</string>
+    <string name="settings_export_button">Экспортировать</string>
+    <string name="settings_import_description">Импорт заменяет все текущие категории и рецепты содержимым выбранной резервной копии.</string>
+    <string name="settings_import_button">Импортировать</string>
+    <string name="settings_backup_file_name">MyRecipes_%1$s.zip</string>
+    <string name="settings_import_confirm_title">Заменить данные?</string>
+    <string name="settings_import_confirm_message">Все текущие категории, рецепты и фотографии будут удалены и заменены данными из резервной копии. Это действие нельзя отменить.</string>
+    <string name="settings_import_confirm_positive">Выбрать файл</string>
+    <string name="settings_cancel">Отмена</string>
+    <string name="settings_export_completed">Экспорт завершён. Категорий: %1$d, рецептов: %2$d, фото: %3$d</string>
+    <string name="settings_import_completed">Импорт завершён. Категорий: %1$d, рецептов: %2$d, фото: %3$d</string>
+    <string name="settings_export_failed">Не удалось экспортировать данные</string>
+    <string name="settings_import_failed">Не удалось импортировать данные. Текущие данные не изменены</string>
+    <string name="settings_import_not_a_backup">Выбранный файл не является резервной копией «Мои рецепты»</string>
+    <string name="settings_import_unsupported_version">Резервная копия создана более новой версией приложения. Обновите приложение и повторите импорт</string>
+    <string name="settings_import_corrupted">Файл резервной копии повреждён. Текущие данные не изменены</string>
 </resources>

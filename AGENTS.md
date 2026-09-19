@@ -11,7 +11,8 @@ Android-приложение для хранения собственных ре
 - **рецепты**: название, ингредиенты, алгоритм приготовления, фото, категория. Их можно создать, открыть, отредактировать и удалить;
 - **избранное**: отметка сердечком на экране рецепта и отдельная вкладка;
 - **поиск** рецептов по названию (поле на экране категорий, запуск по IME `Done`);
-- **«Поделиться»**: рецепт отправляется текстом через `ACTION_SEND`.
+- **«Поделиться»**: рецепт отправляется текстом через `ACTION_SEND`;
+- **настройки** (иконка-шестерёнка справа в тулбаре): **экспорт и импорт** всех категорий, рецептов и их фото в один ZIP-файл через системный диалог выбора файла (подробности в разделе «Резервная копия»).
 
 Весь UI-текст на русском. Язык коммитов тоже русский.
 
@@ -28,7 +29,7 @@ Android-приложение для хранения собственных ре
 | БД | Room 2.6.1 (через KSP) |
 | DI | Dagger 2.52 (через KSP), без Hilt |
 | Асинхронность | Coroutines, `Flow`, `LiveData` |
-| Тесты | JUnit 4, AndroidX Test, Espresso (есть только шаблонные примеры) |
+| Тесты | JUnit 4 (+ `org.json` для JVM-тестов), AndroidX Test, Espresso |
 
 Все версии зависимостей и плагинов лежат в каталоге версий [gradle/libs.versions.toml](gradle/libs.versions.toml). Новые зависимости добавляйте туда, а не строкой в `build.gradle.kts`.
 
@@ -77,24 +78,25 @@ val version = 7          // versionCode = 7, versionName = "1.7"
 
 ```
 app/src/main/java/com/vsmorodina/myrecipes/
-├── MainActivity.kt              # единственная Activity: Toolbar + NavHost + BottomNavigationView
+├── MainActivity.kt              # единственная Activity: Toolbar (+ иконка настроек) + NavHost + BottomNavigationView, отступы системных панелей
 ├── RecipesApplication.kt        # создаёт Dagger-компонент; заполняет категории по умолчанию при первом запуске
 ├── data/
 │   ├── AppDatabase.kt           # Room БД "app_database", version = 2
+│   ├── backup/BackupArchive.kt  # формат резервной копии (ZIP + data.json), без зависимостей от Room/Context
 │   ├── dao/                     # CategoryDao, RecipeDao, RecipePhotoDao
 │   ├── entity/                  # CategoryEntity (+ enum CategoryType), RecipeEntity, RecipePhotoEntity
-│   └── repository/              # CategoryRepositoryImpl, RecipesRepositoryImpl
+│   └── repository/              # CategoryRepositoryImpl, RecipesRepositoryImpl, BackupRepositoryImpl
 ├── domain/
-│   ├── entity/                  # Category, Recipe — доменные модели
-│   ├── repository/              # интерфейсы CategoryRepository, RecipesRepository
-│   └── useCase/                 # 13 use case'ов, по одному действию на класс
+│   ├── entity/                  # Category, Recipe — доменные модели; Backup.kt — BackupSummary, InvalidBackupException
+│   ├── repository/              # интерфейсы CategoryRepository, RecipesRepository, BackupRepository
+│   └── useCase/                 # 15 use case'ов, по одному действию на класс
 ├── di/
 │   ├── ApplicationComponent.kt  # @Singleton компонент, inject(...) для каждого фрагмента
 │   ├── AppViewModelFactory.kt   # фабрика ViewModel на основе Dagger multibinding
 │   ├── annotation/ViewModelKey.kt
 │   └── module/                  # AppModule, DatabaseModule, RepositoryModule, ViewModelModule
 └── presentation/
-    ├── fragments/               # 9 экранов
+    ├── fragments/               # 10 экранов
     ├── viewModels/              # по одной ViewModel на экран
     ├── adapters/                # ListAdapter'ы и DiffUtil-колбэки для RecyclerView
     └── common/fileloadImage.kt  # BindingAdapter "imageUri" (сейчас нигде не используется)
@@ -102,7 +104,8 @@ app/src/main/java/com/vsmorodina/myrecipes/
 app/src/main/res/
 ├── navigation/nav_graph.xml     # граф навигации (единственный)
 ├── menu/menu_main.xml           # нижняя навигация
-├── menu/menu_toolbar.xml        # меню экрана рецепта: Редактировать / Удалить / Поделиться
+├── menu/menu_app_bar.xml        # меню Activity: иконка настроек (action_settings), видна на всех экранах, кроме настроек
+├── menu/menu_toolbar.xml        # меню экрана рецепта: Редактировать / Удалить / Поделиться (добавляется к меню Activity)
 ├── layout/                      # fragment_*.xml (обёрнуты в <layout> для DataBinding), item-макеты
 ├── drawable/                    # иконки; s*.jpg/webp — картинки категорий по умолчанию; def1.webp, image_def.png — заглушки
 └── values/                      # colors, dimens, strings, themes (тёмная серая палитра задана вручную)
@@ -141,9 +144,11 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 - Сначала создаётся binding, потом выставляются `binding.lifecycleOwner = viewLifecycleOwner` и `binding.viewModel = viewModel`. Для DataBinding каждый `fragment_*.xml` содержит `<variable name="viewModel">`.
 - Расширение `Fragment.observeLiveData(liveData) { ... }` объявлено на верхнем уровне в [CreateCategoryFragment.kt](app/src/main/java/com/vsmorodina/myrecipes/presentation/fragments/CreateCategoryFragment.kt) и используется во всём пакете `fragments`.
 - `Flow` собирается так: `lifecycleScope.launch { flow.collectLatest { adapter.submitList(it) } }`.
-- Одноразовые события (успешное сохранение) делаются через `MutableLiveData<String?>`: сначала выставляется значение, сразу за ним `null`. Отдельного event-механизма нет.
+- Одноразовые события (успешное сохранение) в старых экранах делаются через `MutableLiveData<String?>`: сначала выставляется значение, сразу за ним `null`. `SettingsViewModel` делает надёжнее: событие (`BackupEvent`) хранится в LiveData, пока фрагмент не покажет его и не вызовет `onEventHandled()`, поэтому оно не теряется, если экран был в фоне. Тексты сообщений фрагмент берёт из `strings.xml`.
 - `CreateRecipeViewModel` сообщает об ошибках через `sealed interface DisplayMessage` (`ToastMessage` / `AlertDialogMessage`), остальные ViewModel — через `MutableLiveData<String>`.
-- Выбор фото на API ≤ 32 делается через `Intent.ACTION_PICK` + `startActivityForResult`. На API 33+ сначала запрашивается `READ_MEDIA_IMAGES`, потом открывается `ACTION_PICK` через `ActivityResultLauncher`. Выбранный файл **копируется** в `context.filesDir/image_<timestamp>.jpg`, в БД записывается **абсолютный путь** к копии. Отображается через `setImageURI(Uri.fromFile(File(path)))`. Эта логика продублирована в 4 фрагментах: `Create/Change` × `Recipe/Category`.
+- Выбор фото на API ≤ 32 делается через `Intent.ACTION_PICK` + `startActivityForResult`. На API 33+ сначала запрашивается `READ_MEDIA_IMAGES`, потом открывается `ACTION_PICK` через `ActivityResultLauncher`. Выбранный файл **копируется** в `context.filesDir/image_<timestamp>.jpg`, в БД записывается **абсолютный путь** к копии. Отображается через `setImageURI(Uri.fromFile(File(path)))`. Эта логика продублирована в 4 фрагментах: `Create/Change` × `Recipe/Category`. **Резервная копия рассчитывает на то, что все фото лежат прямо в `filesDir`.** Если будете менять место хранения, поправьте и `BackupRepositoryImpl`.
+- Окно рисуется под системными панелями (edge-to-edge, обязательно с `targetSdk 35` на Android 15+). `MainActivity.applySystemBarInsets()` добавляет корневому `LinearLayout` (`main_root`, фон `gray_light`) отступы сверху, слева и справа, а нижний отступ ставит сам `BottomNavigationView`. Новые экраны живут внутри NavHost, и отдельно обрабатывать отступы им не нужно.
+- Меню тулбара собирается из двух частей: `MainActivity` добавляет иконку настроек (`menu_app_bar.xml`), фрагменты — свои пункты (сейчас только `RecipeFragment` через `setHasOptionsMenu`). При смене destination `MainActivity` вызывает `invalidateOptionsMenu()` и в `onPrepareOptionsMenu` прячет иконку на экране настроек.
 - Пустой `photoUri` означает, что фото нет: для карточек используется заглушка `R.drawable.def1`, для экрана рецепта — `R.drawable.image_def`.
 
 ## Модель данных (Room)
@@ -176,6 +181,26 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 
 Заполнение при первом запуске происходит в `RecipesApplication.onCreate()`: проверяется флаг `isFirstRun` в SharedPreferences `RecipesApplicationPreferences`, после чего делается `insertAll` восьми категорий в `CoroutineScope(Dispatchers.IO)`.
 
+## Резервная копия (экспорт / импорт)
+
+Экран «Настройки» (`SettingsFragment` → `SettingsViewModel` → `Export/ImportBackupUseCase` → `BackupRepository`). Файл выбирается через Storage Access Framework (`ActivityResultContracts.CreateDocument("application/zip")` / `OpenDocument()`), поэтому разрешения на хранилище не нужны.
+
+**Формат файла** ([BackupArchive.kt](app/src/main/java/com/vsmorodina/myrecipes/data/backup/BackupArchive.kt)): ZIP-архив, внутри которого:
+- `data.json`: `{"format": "myrecipes-backup", "version": 1, "exportedAt": <ms>, "categories": [...], "recipes": [...]}`. Поля записей совпадают с полями Entity. Вместо абсолютного пути к фото в поле `photo` лежит имя файла внутри архива (например, `photos/3.jpg`); если фото нет, поля нет;
+- `photos/<n>.<ext>`: сами фото. Одно и то же фото, на которое ссылаются несколько записей, хранится один раз.
+
+**Экспорт**: читает все категории и рецепты в одной транзакции и пишет архив. Если файла фото уже нет на диске, запись экспортируется без фото.
+
+**Импорт полностью заменяет данные**, объединения нет. Порядок такой:
+1. Архив читается, фото копируются в `filesDir` под новыми именами `image_<random>.<ext>`. Имена из архива в путь не попадают, так что обход каталогов (zip slip) невозможен.
+2. Данные проверяются: `format`, `version` (версия новее `FORMAT_VERSION` отклоняется), уникальность и положительность `id`, у каждого рецепта должна существовать категория. `id` сохраняются как есть.
+3. В одной транзакции Room: удалить рецепты и категории → вставить новые.
+4. Только после успешной транзакции удаляются старые файлы фото (и только те, что лежат прямо в `filesDir`).
+
+Если что-то пошло не так на шагах 1–3, скопированные фото удаляются, а БД остаётся прежней. Ошибки формата описывает `InvalidBackupException(reason)` с причинами `NOT_A_BACKUP` / `UNSUPPORTED_VERSION` / `CORRUPTED`, для каждой причины в `strings.xml` есть своё сообщение.
+
+**Если меняете схему БД или Entity**, обновите `BackupArchive` (запись и чтение), а при несовместимом изменении формата поднимите `FORMAT_VERSION` и сохраните чтение старых версий. Резервные копии живут дольше, чем версия приложения.
+
 ## Навигация
 
 Все экраны описаны в [nav_graph.xml](app/src/main/res/navigation/nav_graph.xml), стартовый — `categoriesFragment`. Аргументы передаются через Safe Args (`XxxFragmentArgs.fromBundle(requireArguments())`, `XxxFragmentDirections.actionYyy(...)`).
@@ -191,6 +216,9 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 | `changeCategoryFragment` | `ChangeCategoryFragment` | `categoryId: long` | — |
 | `favoritesFragment` | `FavouritesRecipesFragment` | — | `recipeFragment` |
 | `searchRecipeFragment` | `SearchRecipeFragment` | `searchRecipeArg: string` | `recipeFragment` |
+| `settingsFragment` | `SettingsFragment` | — | — |
+
+На `settingsFragment` ведёт **глобальное** действие `action_global_settingsFragment` (`launchSingleTop`), его вызывает `MainActivity` через `NavGraphDirections.actionGlobalSettingsFragment()`. Поэтому «Назад» из настроек возвращает на тот экран, с которого их открыли.
 
 Нижняя навигация ([menu_main.xml](app/src/main/res/menu/menu_main.xml)) связана с графом через `setupWithNavController`. Для этого **id пунктов меню должны совпадать с id destination'ов**: `categoriesFragment` (подпись «Поиск»), `favoritesFragment`, `createRecipeFragment`. Если переименовываете destination, меняйте и меню.
 
@@ -198,7 +226,7 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 
 ## Как добавить новый экран или функцию (чек-лист)
 
-1. **Data**: если нужен новый запрос, добавьте метод в DAO. Если меняется схема (новая сущность или колонка), поднимите `version` в `AppDatabase` и учтите, что без миграции **данные пользователей будут стёрты** (см. «Подводные камни»).
+1. **Data**: если нужен новый запрос, добавьте метод в DAO. Если меняется схема (новая сущность или колонка), поднимите `version` в `AppDatabase` и учтите, что без миграции **данные пользователей будут стёрты** (см. «Подводные камни»). Новые поля также нужно добавить в `BackupArchive`, иначе они не попадут в резервную копию.
 2. **Domain**: добавьте метод в интерфейс репозитория (`domain/repository`), реализуйте его в `data/repository/*Impl`.
 3. **UseCase**: создайте класс `XxxUseCase @Inject constructor(repo)` с методом `invoke(...)` в `domain/useCase/`.
 4. **ViewModel**: `class XxxViewModel @Inject constructor(...) : ViewModel()` в `presentation/viewModels/`.
@@ -222,7 +250,12 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 
 ## Тесты
 
-Настоящих тестов нет, есть только шаблоны `ExampleUnitTest` (`src/test`) и `ExampleInstrumentedTest` (`src/androidTest`). Библиотек для моков и для тестирования корутин/`LiveData` не подключено: нет `mockk`, `kotlinx-coroutines-test`, `arch core-testing`. Если пишете тесты, добавьте их в `libs.versions.toml`. Проще всего покрыть unit-тестами use case'ы и ViewModel, подменив интерфейсы репозиториев фейками.
+- [BackupArchiveTest.kt](app/src/test/java/com/vsmorodina/myrecipes/data/backup/BackupArchiveTest.kt): JVM-тесты формата резервной копии (экспорт и импорт туда-обратно, отсутствующие и общие фото, некорректные и чужие архивы, zip slip, удаление скопированных фото при ошибке).
+- Кроме них есть только шаблоны `ExampleUnitTest` и `ExampleInstrumentedTest`.
+
+Android-версия `org.json` в JVM-тестах — заглушка (методы бросают `RuntimeException("Method ... not mocked")`). Поэтому в `testImplementation` подключена настоящая `org.json:json`. Версия `20180813` выбрана сознательно: её API ближе к `org.json` из Android. Из-за той же особенности `JSONObject.optString` возвращает строку `"null"` для JSON `null`, и в коде используется `optStringOrNull`.
+
+Библиотек для моков и для тестирования корутин/`LiveData` нет: не подключены `mockk`, `kotlinx-coroutines-test`, `arch core-testing`. Если нужны, добавьте их в `libs.versions.toml`. Логику без Android (как `BackupArchive`) выносите в отдельные классы, работающие со `Stream`/`File`: такие легко тестировать. Use case'ы и ViewModel проще всего тестировать, подменив интерфейсы репозиториев фейками.
 
 ## Подводные камни и известные проблемы
 
@@ -235,7 +268,7 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 5. **Редактирование категории по умолчанию** создаёт `CategoryEntity` без `isDefault` и `type`. Категория становится обычной и теряет встроенную картинку.
 6. **Удаление категории** происходит сразу, без подтверждения, и каскадом удаляет все её рецепты (FK `CASCADE`).
 7. **Сообщение об успехе приходит раньше записи.** В `CreateRecipeViewModel` и `ChangeRecipeViewModel` оно отправляется до завершения `insert` (вне `launch`), фрагмент тут же делает `navigateUp()`, а `viewModelScope` отменяется при уничтожении ViewModel.
-8. **Файлы фото не удаляются**: ни при замене фото, ни при удалении рецепта или категории. `filesDir` со временем растёт.
+8. **Файлы фото не удаляются**: ни при замене фото, ни при удалении рецепта или категории. `filesDir` со временем растёт. Исключение — импорт резервной копии: он удаляет фото прежних данных.
 9. `SearchRecipeItemAdapter` не обрабатывает пустой `photoUri`, заглушки нет. `SearchRecipeFragment` не обнуляет `_binding` в `onDestroyView`.
 10. `RecipeFragment` инжектится дважды (в `onCreate` и в `onCreateView`). Это безвредно, но лишне.
 11. Мёртвый код: `RecipePhotoEntity`/`RecipePhotoDao`, BindingAdapter `imageUri` в `presentation/common/fileloadImage.kt`, `SearchRecipeItemCallback`, строка `hello_blank_fragment`, закомментированные старые фабрики ViewModel во фрагментах.
