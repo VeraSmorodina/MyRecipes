@@ -13,6 +13,7 @@ import com.vsmorodina.myrecipes.presentation.viewModels.FavouritesRecipesViewMod
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipeViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.RecipesViewModel
 import com.vsmorodina.myrecipes.presentation.viewModels.SearchRecipeViewModel
+import com.vsmorodina.myrecipes.presentation.viewModels.SettingsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -64,6 +65,11 @@ abstract class ViewModelModule {
     @ViewModelKey(ChangeRecipeViewModel::class)
     @Binds
     abstract fun provideChangeRecipeViewModel(changeRecipeViewModel: ChangeRecipeViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    @Binds
+    abstract fun provideSettingsViewModel(settingsViewModel: SettingsViewModel): ViewModel
 
     @Binds
     abstract fun provideAppViewModelFactory(appViewModelFactory: AppViewModelFactory): ViewModelProvider.Factory

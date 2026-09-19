@@ -13,6 +13,7 @@ import com.vsmorodina.myrecipes.presentation.fragments.FavouritesRecipesFragment
 import com.vsmorodina.myrecipes.presentation.fragments.RecipeFragment
 import com.vsmorodina.myrecipes.presentation.fragments.RecipesFragment
 import com.vsmorodina.myrecipes.presentation.fragments.SearchRecipeFragment
+import com.vsmorodina.myrecipes.presentation.fragments.SettingsFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -36,4 +37,6 @@ interface ApplicationComponent {
     fun inject(searchRecipeFragment: SearchRecipeFragment)
 
     fun inject(changeRecipeFragment: ChangeRecipeFragment)
+
+    fun inject(settingsFragment: SettingsFragment)
 }

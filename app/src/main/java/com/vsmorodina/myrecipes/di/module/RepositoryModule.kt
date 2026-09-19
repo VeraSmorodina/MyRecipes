@@ -1,7 +1,9 @@
 package com.vsmorodina.myrecipes.di.module
 
+import com.vsmorodina.myrecipes.data.repository.BackupRepositoryImpl
 import com.vsmorodina.myrecipes.data.repository.CategoryRepositoryImpl
 import com.vsmorodina.myrecipes.data.repository.RecipesRepositoryImpl
+import com.vsmorodina.myrecipes.domain.repository.BackupRepository
 import com.vsmorodina.myrecipes.domain.repository.CategoryRepository
 import com.vsmorodina.myrecipes.domain.repository.RecipesRepository
 import dagger.Binds
@@ -14,5 +16,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideCategoryRepository(categoryRepositoryImpl: CategoryRepositoryImpl): CategoryRepository
+
+    @Binds
+    abstract fun provideBackupRepository(backupRepositoryImpl: BackupRepositoryImpl): BackupRepository
 
 }

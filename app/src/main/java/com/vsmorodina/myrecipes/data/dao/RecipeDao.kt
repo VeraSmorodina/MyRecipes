@@ -14,11 +14,20 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recipeEntity: RecipeEntity)
 
+    @Insert
+    suspend fun insertAll(recipeEntities: List<RecipeEntity>)
+
     @Delete
     suspend fun delete(recipeEntity: RecipeEntity)
 
     @Query("DELETE FROM recipes WHERE id = :recipeId")
     suspend fun deleteById(recipeId: Long)
+
+    @Query("DELETE FROM recipes")
+    suspend fun deleteAll()
+
+    @Query("SELECT * FROM recipes")
+    suspend fun getAll(): List<RecipeEntity>
 
     @Query("SELECT * FROM recipes WHERE id = :id")
     fun getRecipeLiveData(id: Long): LiveData<RecipeEntity>

@@ -6,6 +6,11 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/categoriesFragment">
 
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.vsmorodina.myrecipes.presentation.fragments.CategoriesFragment"
@@ -99,4 +104,9 @@
             android:id="@+id/action_searchRecipeFragment_to_recipeFragment"
             app:destination="@id/recipeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.vsmorodina.myrecipes.presentation.fragments.SettingsFragment"
+        android:label="@string/settings_title"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
