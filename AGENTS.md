@@ -81,7 +81,7 @@ app/src/main/java/com/vsmorodina/myrecipes/
 ├── MainActivity.kt              # единственная Activity: Toolbar (+ иконка настроек) + NavHost + BottomNavigationView, отступы системных панелей
 ├── RecipesApplication.kt        # создаёт Dagger-компонент; заполняет категории по умолчанию при первом запуске
 ├── data/
-│   ├── AppDatabase.kt           # Room БД "app_database", version = 2
+│   ├── AppDatabase.kt           # Room БД "app_database", version = 3; миграции и единственный билдер (getInstance)
 │   ├── backup/BackupArchive.kt  # формат резервной копии (ZIP + data.json), без зависимостей от Room/Context
 │   ├── dao/                     # CategoryDao, RecipeDao, RecipePhotoDao
 │   ├── entity/                  # CategoryEntity (+ enum CategoryType), RecipeEntity, RecipePhotoEntity
@@ -153,7 +153,20 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 
 ## Модель данных (Room)
 
-БД `app_database`, `version = 2`, `exportSchema = false`, **`fallbackToDestructiveMigration()`**.
+БД `app_database`, `version = 3`, `exportSchema = true`. Схемы выгружаются в `app/schemas/com.vsmorodina.myrecipes.data.AppDatabase/<version>.json` (аргумент KSP `room.schemaLocation`) и **коммитятся**.
+
+Экземпляр БД создаётся только в `AppDatabase.getInstance()`, и `DatabaseModule` отдаёт этот же экземпляр. Там подключены миграции (`MIGRATION_2_3`) и `fallbackToDestructiveMigrationFrom(1)`: пересоздаётся только база версии 1 из ранних сборок до 1.2. Для любой другой версии без миграции приложение упадёт, а не удалит данные молча.
+
+### Изменение схемы — обязательный порядок
+
+Любая правка Entity, которая меняет таблицы, колонки, индексы или внешние ключи (методы и комментарии не в счёт), требует:
+1. поднять `version` в `@Database`;
+2. написать `Migration(old, new)` и добавить её в `addMigrations(...)` в `AppDatabase.getInstance()`;
+3. закоммитить новый `app/schemas/.../<version>.json`. Если после сборки изменился JSON **текущей** версии, значит, схема поменялась без повышения версии — это ошибка;
+4. проверить обновление со старой версии: поставить предыдущий релиз, создать данные, установить новую сборку поверх (`adb install -r`), убедиться, что приложение не падает и данные на месте;
+5. обновить `BackupArchive`, если появились новые поля.
+
+**История версии 2.** Под номером 2 вышли три разные схемы: в 1.2–1.3 не было колонки `categories.type`, в 1.4–1.6 — индекса `index_recipes_category_id`, а 1.7–1.8 уже с ним. Версию при этом не поднимали, поэтому обновление с 1.6 и раньше падало с `Room cannot verify the data integrity`. `MIGRATION_2_3` проверяет фактическую схему (`PRAGMA table_info`) и добавляет недостающее, поэтому подходит для любой из трёх. Колонка `type` у старых баз получает `DEFAULT 'NONE'`: Room не сверяет значения по умолчанию, если в Entity они не заданы.
 
 **`categories`** (`CategoryEntity`)
 | Колонка | Тип | Примечание |
@@ -226,7 +239,7 @@ Fragment ──(AppViewModelFactory)──▶ ViewModel ──▶ UseCase ──
 
 ## Как добавить новый экран или функцию (чек-лист)
 
-1. **Data**: если нужен новый запрос, добавьте метод в DAO. Если меняется схема (новая сущность или колонка), поднимите `version` в `AppDatabase` и учтите, что без миграции **данные пользователей будут стёрты** (см. «Подводные камни»). Новые поля также нужно добавить в `BackupArchive`, иначе они не попадут в резервную копию.
+1. **Data**: если нужен новый запрос, добавьте метод в DAO (схему это не меняет). Если меняется схема (новая сущность, колонка или индекс), действуйте по разделу «Изменение схемы — обязательный порядок»: версия, миграция, JSON схемы, проверка обновления, `BackupArchive`.
 2. **Domain**: добавьте метод в интерфейс репозитория (`domain/repository`), реализуйте его в `data/repository/*Impl`.
 3. **UseCase**: создайте класс `XxxUseCase @Inject constructor(repo)` с методом `invoke(...)` в `domain/useCase/`.
 4. **ViewModel**: `class XxxViewModel @Inject constructor(...) : ViewModel()` в `presentation/viewModels/`.
@@ -261,8 +274,8 @@ Android-версия `org.json` в JVM-тестах — заглушка (мет
 
 Прежде чем что-то «чинить попутно», учтите: это текущее поведение, и часть его может быть не очевидна пользователю.
 
-1. **Разрушительная миграция.** `fallbackToDestructiveMigration()` + `exportSchema = false`: любое изменение схемы с повышением `version` **удаляет все рецепты пользователя**. Для изменений схемы пишите `Migration`. После потери данных сид категорий не повторится, потому что флаг `isFirstRun` уже `false`.
-2. **Два экземпляра БД.** `RecipesApplication` заполняет категории через `AppDatabase.getInstance()`, а весь остальной код работает с отдельным `@Singleton`-экземпляром из `DatabaseModule`. Это два разных объекта `RoomDatabase`, и между ними не работает invalidation tracker: при самом первом запуске список категорий может не обновиться, пока экран не пересоздан. Любой новый код должен брать БД или DAO **только через Dagger**.
+1. **Схема без повышения версии роняет приложение у пользователей**, но только при обновлении. На чистой установке всё работает, поэтому при разработке этого не видно (так появились 1.4 и 1.7). Проверяйте обновление поверх предыдущего релиза и следите за диффом `app/schemas`.
+2. **Не создавайте БД в обход `AppDatabase.getInstance()`.** Второй `Room.databaseBuilder` получит другие настройки (без миграций) и отдельный invalidation tracker. Раньше так и было: `DatabaseModule` строил свой экземпляр. В коде приложения берите БД и DAO через Dagger.
 3. **Поиск — точное совпадение.** `RecipeDao.searchRecipes` использует `WHERE name LIKE :query`, но `%` нигде не добавляется. Найдётся только рецепт с полностью совпадающим названием (без учёта регистра и только для ASCII; для кириллицы SQLite `LIKE` регистрозависим).
 4. **Редактирование рецепта сбрасывает категорию.** `ChangeRecipeViewModel.calculateCategoryIndex()` вызывается раньше, чем загружен рецепт, и читает `.value` у Room-`LiveData` без наблюдателей (там всегда `null`). Поэтому спиннер не выставляется на категорию рецепта, и при сохранении рецепт переезжает в первую категорию списка.
 5. **Редактирование категории по умолчанию** создаёт `CategoryEntity` без `isDefault` и `type`. Категория становится обычной и теряет встроенную картинку.

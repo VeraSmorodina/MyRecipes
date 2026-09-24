@@ -44,6 +44,11 @@ android {
 
 }
 
+ksp {
+    // Схема БД выгружается в app/schemas и коммитится: так любое её изменение видно в диффе
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
