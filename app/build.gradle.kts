@@ -10,7 +10,7 @@ android {
     namespace = "com.vsmorodina.myrecipes"
     compileSdk = 35
 
-    val version = 8
+    val version = 9
 
     defaultConfig {
         applicationId = "com.vsmorodina.myrecipes"
