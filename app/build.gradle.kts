@@ -10,7 +10,7 @@ android {
     namespace = "com.vsmorodina.myrecipes"
     compileSdk = 35
 
-    val version = 8
+    val version = 9
 
     defaultConfig {
         applicationId = "com.vsmorodina.myrecipes"
@@ -42,6 +42,11 @@ android {
         dataBinding = true
     }
 
+}
+
+ksp {
+    // Схема БД выгружается в app/schemas и коммитится: так любое её изменение видно в диффе
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
