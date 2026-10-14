@@ -1,6 +1,7 @@
 package com.vsmorodina.myrecipes.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.vsmorodina.myrecipes.data.dao.RecipeDao
 import com.vsmorodina.myrecipes.data.entity.RecipeEntity
 import com.vsmorodina.myrecipes.domain.entity.Recipe
@@ -40,6 +41,19 @@ class RecipesRepositoryImpl @Inject constructor(private val recipeDao: RecipeDao
     }
 
     override fun searchRecipes(query: String): LiveData<List<RecipeEntity>> {
-        return recipeDao.searchRecipes(query)
+        return recipeDao.getAllRecipesLiveData().map { filterByName(it, query) }
+    }
+
+    companion object {
+        /**
+         * Рецепты, в названии которых встречается [query] (частичное совпадение, без учёта регистра).
+         * Фильтруем в Kotlin, а не через LIKE: в SQLite на Android LIKE и lower() не учитывают
+         * регистр только для латиницы, и «борщ» не нашёл бы «Борщ».
+         */
+        fun filterByName(recipes: List<RecipeEntity>, query: String): List<RecipeEntity> {
+            val trimmedQuery = query.trim()
+            if (trimmedQuery.isEmpty()) return emptyList()
+            return recipes.filter { it.name.contains(trimmedQuery, ignoreCase = true) }
+        }
     }
 }
